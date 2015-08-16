@@ -1,0 +1,8 @@
+Title: Optimizing burst search in python
+Slug: optimize-burst-search-python
+Date: 2015-08-16
+Category: Scientific Computing
+Tags: python, numpy, cython, numba, burst-search
+Author: Antonino Ingargiola
+Status: draft
+Summary: How to optimize python code with numpy, cython, numba
