@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Optimizing burst search in python</title>
+        <link rel="stylesheet" href="http://tritemio.github.io/smbits/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://tritemio.github.io/smbits/">Single-Molecules Bits  <strong>Of scientific computing and single molecules.</strong></a></h1>
+                <nav><ul>
+                    <li><a href="http://tritemio.github.io/smbits/pages/about.html">About</a></li>
+                    <li class="active"><a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://tritemio.github.io/smbits/drafts/optimize-burst-search-python.html" rel="bookmark"
+           title="Permalink to Optimizing burst search in python">Optimizing burst search in&nbsp;python</a></h1>
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="tritemio_sc">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-08-16T00:00:00-07:00">
+                Published: Sun 16 August 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
+        </address>
+<p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
+<p>tags: <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> <a href="http://tritemio.github.io/smbits/tag/numpy.html">numpy</a> <a href="http://tritemio.github.io/smbits/tag/cython.html">cython</a> <a href="http://tritemio.github.io/smbits/tag/numba.html">numba</a> <a href="http://tritemio.github.io/smbits/tag/burst-search.html">burst-search</a> </p>
+</footer><!-- /.post-info -->      <style type="text/css">/*!
+*
+* IPython notebook
+*
+*/.ansibold{font-weight:bold}.ansiblack{color:black}.ansired{color:darkred}.ansigreen{color:darkgreen}.ansiyellow{color:#c4a000}.ansiblue{color:darkblue}.ansipurple{color:darkviolet}.ansicyan{color:steelblue}.ansigray{color:gray}.ansibgblack{background-color:black}.ansibgred{background-color:red}.ansibggreen{background-color:green}.ansibgyellow{background-color:yellow}.ansibgblue{background-color:blue}.ansibgpurple{background-color:magenta}.ansibgcyan{background-color:cyan}.ansibggray{background-color:gray}div.cell{border:1px solid transparent;display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;border-radius:2px;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;border-width:thin;border-style:solid;width:100%;padding:5px;margin:0;outline:none}div.cell.selected{border-color:#ababab}@media print{div.cell.selected{border-color:transparent}}.edit_mode div.cell.selected{border-color:green}@media print{.edit_mode div.cell.selected{border-color:transparent}}.prompt{min-width:14ex;padding:.4em;margin:0;font-family:monospace;text-align:right;line-height:1.21429em}@media (max-width:540px){.prompt{text-align:left}}div.inner_cell{display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;-webkit-box-flex:1;-moz-box-flex:1;box-flex:1;flex:1}@-moz-document url-prefix(){div.inner_cell{overflow-x:hidden}}div.input_area{border:1px solid #cfcfcf;border-radius:2px;background:#f7f7f7;line-height:1.21429em}div.prompt:empty{padding-top:0;padding-bottom:0}div.unrecognized_cell{padding:5px 5px 5px 0;display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}div.unrecognized_cell .inner_cell{border-radius:2px;padding:5px;font-weight:bold;color:red;border:1px solid #cfcfcf;background:#eaeaea}div.unrecognized_cell .inner_cell a{color:inherit;text-decoration:none}div.unrecognized_cell .inner_cell a:hover{color:inherit;text-decoration:none}@media (max-width:540px){div.unrecognized_cell>div.prompt{display:none}}@media print{div.code_cell{page-break-inside:avoid}}div.input{page-break-inside:avoid;display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}@media (max-width:540px){div.input{display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}}div.input_prompt{color:navy;border-top:1px solid transparent}div.input_area>div.highlight{margin:.4em;border:none;padding:0;background-color:transparent}div.input_area>div.highlight>pre{margin:0;border:none;padding:0;background-color:transparent}.CodeMirror{line-height:1.21429em;font-size:14px;height:auto;background:none}.CodeMirror-scroll{overflow-y:hidden;overflow-x:auto}.CodeMirror-lines{padding:.4em}.CodeMirror-linenumber{padding:0 8px 0 4px}.CodeMirror-gutters{border-bottom-left-radius:2px;border-top-left-radius:2px}.CodeMirror pre{padding:0;border:0;border-radius:0}.highlight-base{}.highlight-variable{}.highlight-variable-2{color:#1a1a1a}.highlight-variable-3{color:#333}.highlight-string{color:#ba2121}.highlight-comment{color:#408080;font-style:italic}.highlight-number{80}.highlight-atom{color:#88f}.highlight-keyword{8000;font-weight:bold}.highlight-builtin{8000}.highlight-error{color:#f00}.highlight-operator{color:#a2f;font-weight:bold}.highlight-meta{color:#a2f}.highlight-def{f}.highlight-string-2{color:#f50}.highlight-qualifier{color:#555}.highlight-bracket{color:#997}.highlight-tag{color:#170}.highlight-attribute{c}.highlight-header{color:blue}.highlight-quote{90}.highlight-link{c}.cm-s-ipython span.cm-keyword{8000;font-weight:bold}.cm-s-ipython span.cm-atom{color:#88f}.cm-s-ipython span.cm-number{80}.cm-s-ipython span.cm-def{f}.cm-s-ipython span.cm-variable{}.cm-s-ipython span.cm-operator{color:#a2f;font-weight:bold}.cm-s-ipython span.cm-variable-2{color:#1a1a1a}.cm-s-ipython span.cm-variable-3{color:#333}.cm-s-ipython span.cm-comment{color:#408080;font-style:italic}.cm-s-ipython span.cm-string{color:#ba2121}.cm-s-ipython span.cm-string-2{color:#f50}.cm-s-ipython span.cm-meta{color:#a2f}.cm-s-ipython span.cm-qualifier{color:#555}.cm-s-ipython span.cm-builtin{8000}.cm-s-ipython span.cm-bracket{color:#997}.cm-s-ipython span.cm-tag{color:#170}.cm-s-ipython span.cm-attribute{c}.cm-s-ipython span.cm-header{color:blue}.cm-s-ipython span.cm-quote{90}.cm-s-ipython span.cm-link{c}.cm-s-ipython span.cm-error{color:#f00}.cm-s-ipython span.cm-tab{background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);background-position:right;background-repeat:no-repeat}div.output_wrapper{position:relative;display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;z-index:1}div.output_scroll{height:24em;width:100%;overflow:auto;border-radius:2px;-webkit-box-shadow:inset 0 2px 8px rgba(0,0,0,0.8);box-shadow:inset 0 2px 8px rgba(0,0,0,0.8);display:block}div.output_collapsed{margin:0;padding:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}div.out_prompt_overlay{height:100%;padding:0 .4em;position:absolute;border-radius:2px}div.out_prompt_overlay:hover{-webkit-box-shadow:inset 0 0 1px #000;box-shadow:inset 0 0 1px #000;background:rgba(240,240,240,0.5)}div.output_prompt{color:darkred}div.output_area{padding:0;page-break-inside:avoid;display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}div.output_area .MathJax_Display{text-align:left !important}div.output_area div.output_area div.output_area img,div.output_area svg{max-width:100%;height:auto}div.output_area img.unconfined,div.output_area svg.unconfined{max-width:none}.output{display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}@media (max-width:540px){div.output_area{display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}}div.output_area pre{margin:0;padding:0;border:0;vertical-align:baseline;color:black;background-color:transparent;border-radius:0}div.output_subarea{overflow-x:auto;padding:.4em;-webkit-box-flex:1;-moz-box-flex:1;box-flex:1;flex:1;max-width:calc(100% - 14ex)}div.output_text{text-align:left;line-height:1.21429em}div.output_stderr{background:#fdd}div.output_latex{text-align:left}div.output_javascript:empty{padding:0}.js-error{color:darkred}div.raw_input_container{font-family:monospace;padding-top:5px}input.raw_input{font-family:inherit;font-size:inherit;color:inherit;width:auto;vertical-align:baseline;padding:0 .25em;margin:0 .25em}input.raw_input:focus{box-shadow:none}p.p-space{margin-bottom:10px}div.output_unrecognized{padding:5px;font-weight:bold;color:red}div.output_unrecognized a{color:inherit;text-decoration:none}div.output_unrecognized a:hover{color:inherit;text-decoration:none}.rendered_html{}.rendered_html :link{text-decoration:underline}.rendered_html :visited{text-decoration:underline}.rendered_html h1:first-child{margin-top:.538em}.rendered_html h2:first-child{margin-top:.636em}.rendered_html h3:first-child{margin-top:.777em}.rendered_html h4:first-child{margin-top:1em}.rendered_html h5:first-child{margin-top:1em}.rendered_html h6:first-child{margin-top:1em}.rendered_html *+ul{margin-top:1em}.rendered_html *+ol{margin-top:1em}.rendered_html *+table{margin-top:1em}.rendered_html *+p{margin-top:1em}.rendered_html *+img{margin-top:1em}div.text_cell{display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}@media (max-width:540px){div.text_cell>div.prompt{display:none}}div.text_cell_render{outline:none;resize:none;width:inherit;border-style:none;padding:.5em .5em .5em .4em;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box}a.anchor-link:link{text-decoration:none;padding:0 20px;visibility:hidden}h1:hover .anchor-link,h2:hover .anchor-link,h3:hover .anchor-link,h4:hover .anchor-link,h5:hover .anchor-link,h6:hover .anchor-link{visibility:visible}.text_cell.rendered .input_area{display:none}.text_cell.rendered .text_cell.unrendered .text_cell_render{display:none}.cm-header-1,.cm-header-2,.cm-header-3,.cm-header-4,.cm-header-5,.cm-header-6{font-weight:bold;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}.cm-header-1{font-size:185.7%}.cm-header-2{font-size:157.1%}.cm-header-3{font-size:128.6%}.cm-header-4{font-size:110%}.cm-header-5{font-size:100%;font-style:italic}.cm-header-6{font-size:100%;font-style:italic}.widget-interact>div,.widget-interact>input{padding:2.5px}.widget-area{page-break-inside:avoid;display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}.widget-area .widget-subarea{padding:.44em .4em .4em 1px;margin-left:6px;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;-webkit-box-flex:2;-moz-box-flex:2;box-flex:2;flex:2;-webkit-box-align:start;-moz-box-align:start;box-align:start;align-items:flex-start}.widget-area.connection-problems .prompt:after{content:"\f127";font-family:'FontAwesome';color:#d9534f;font-size:14px;top:3px;padding:3px}.slide-track{border:1px solid #ccc;background:#fff;border-radius:2px}.widget-hslider{padding-left:8px;padding-right:2px;overflow:visible;width:350px;height:5px;max-height:5px;margin-top:13px;margin-bottom:10px;border:1px solid #ccc;background:#fff;border-radius:2px;display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}.widget-hslider .ui-slider{border:0;background:none;display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch;-webkit-box-flex:1;-moz-box-flex:1;box-flex:1;flex:1}.widget-hslider .ui-slider .ui-slider-handle{width:12px;height:28px;margin-top:-8px;border-radius:2px}.widget-hslider .ui-slider .ui-slider-range{height:12px;margin-top:-4px;background:#eee}.widget-vslider{padding-bottom:5px;overflow:visible;width:5px;max-width:5px;height:250px;margin-left:12px;border:1px solid #ccc;background:#fff;border-radius:2px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}.widget-vslider .ui-slider{border:0;background:none;margin-left:-4px;margin-top:5px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;-webkit-box-flex:1;-moz-box-flex:1;box-flex:1;flex:1}.widget-vslider .ui-slider .ui-slider-handle{width:28px;height:12px;margin-left:-9px;border-radius:2px}.widget-vslider .ui-slider .ui-slider-range{width:12px;margin-left:-1px;background:#eee}.widget-text{width:350px;margin:0}.widget-listbox{width:350px;margin-bottom:0}.widget-numeric-text{width:150px;margin:0}.widget-progress{margin-top:6px;min-width:350px}.widget-progress .progress-bar{-webkit-transition:none;-moz-transition:none;-ms-transition:none;-o-transition:none;transition:none}.widget-combo-btn{min-width:125px}.widget_item .dropdown-menu li a{color:inherit}.widget-hbox{display:-webkit-box;-webkit-box-orient:horizontal;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:horizontal;-moz-box-align:stretch;display:box;box-orient:horizontal;box-align:stretch;display:flex;flex-direction:row;align-items:stretch}.widget-hbox input[type="checkbox"]{margin-top:9px;margin-bottom:10px}.widget-hbox .widget-label{min-width:10ex;padding-right:8px;padding-top:5px;text-align:right;vertical-align:text-top}.widget-hbox .widget-readout{padding-left:8px;padding-top:5px;text-align:left;vertical-align:text-top}.widget-vbox{display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch}.widget-vbox .widget-label{padding-bottom:5px;text-align:center;vertical-align:text-bottom}.widget-vbox .widget-readout{padding-top:5px;text-align:center;vertical-align:text-top}.widget-box{box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;-webkit-box-align:start;-moz-box-align:start;box-align:start;align-items:flex-start}.widget-radio-box{display:-webkit-box;-webkit-box-orient:vertical;-webkit-box-align:stretch;display:-moz-box;-moz-box-orient:vertical;-moz-box-align:stretch;display:box;box-orient:vertical;box-align:stretch;display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding-top:4px}.widget-radio-box label{margin-top:0;margin-left:20px}</style>
+<style type="text/css">.highlight .hll { background-color: #ffffcc }
+.highlight  { background: #f8f8f8; }
+.highlight .c { color: #408080; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #<span class="caps">FF0000</span> } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666666 } /* Operator */
+.highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #<span class="caps">BC7A00</span> } /* Comment.Preproc */
+.highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #<span class="caps">FF0000</span> } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #<span class="caps">0044DD</span> } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666666 } /* Literal.Number */
+.highlight .s { color: #<span class="caps">BA2121</span> } /* Literal.String */
+.highlight .na { color: #7D9029 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #<span class="caps">0000FF</span>; font-weight: bold } /* Name.Class */
+.highlight .no { color: #880000 } /* Name.Constant */
+.highlight .nd { color: #<span class="caps">AA22FF</span> } /* Name.Decorator */
+.highlight .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #<span class="caps">D2413A</span>; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #<span class="caps">0000FF</span> } /* Name.Function */
+.highlight .nl { color: #<span class="caps">A0A000</span> } /* Name.Label */
+.highlight .nn { color: #<span class="caps">0000FF</span>; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #<span class="caps">AA22FF</span>; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mb { color: #666666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666666 } /* Literal.Number.Float */
+.highlight .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sb { color: #<span class="caps">BA2121</span> } /* Literal.String.Backtick */
+.highlight .sc { color: #<span class="caps">BA2121</span> } /* Literal.String.Char */
+.highlight .sd { color: #<span class="caps">BA2121</span>; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #<span class="caps">BA2121</span> } /* Literal.String.Double */
+.highlight .se { color: #<span class="caps">BB6622</span>; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #<span class="caps">BA2121</span> } /* Literal.String.Heredoc */
+.highlight .si { color: #<span class="caps">BB6688</span>; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #<span class="caps">BB6688</span> } /* Literal.String.Regex */
+.highlight .s1 { color: #<span class="caps">BA2121</span> } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote><p><em>Premature optimization is the root of all&nbsp;evil.</em></p>
+<div align="right"> Donald Knuth </div>
+</blockquote>
+<p>In the analysis of freely-diffusing single-molecule experiments, 
+burst search algorithm is the central step that allows identifying 
+and quantify single molecule fluorescence. In this post, I use the 
+sliding-window burst search algorithm 
+(<a href="http://dx.doi.org/10.1021/jp980965t">Fries 1998</a>) as an pretext to 
+illustrate some typical optimization techniques commonly used in python, 
+namely vectorization (numpy) and compilation to machine code (cython, numba).
+I will use a simplified burst search that saves only start and stop times
+of each burst. For a complete implementation see the 
+<a href="http://tritemio.github.io/FRETBursts/">FRETBursts</a> burst analysis 
+software (<a href="https://github.com/tritemio/FRETBursts/tree/master/fretbursts/burstsearch">code here</a>).</p>
+<p>As of why I choose python, you can read the famous Jake Vanderplas&#8217; post: 
+<a href="https://jakevdp.github.io/blog/2012/09/20/why-python-is-the-last/">Why Python is the Last Language You&#8217;ll Have To Learn</a>. 
+Or, as John Cook synthetically put&nbsp;it:</p>
+<blockquote><p>I’d rather do mathematics in a general programming language than do general programming in a mathematical&nbsp;language.</p>
+</blockquote>
+<p>(from John&#8217;s recent post 
+<a href="http://www.johndcook.com/blog/2015/07/16/scientific-computing-in-python/">Scientific computing in Python</a>).</p>
+<h1 id="Burst-search">Burst search<a class="anchor-link" href="#Burst-search">¶</a></h1><p>Briefly, a burst search algorithm tries to identifies bursts in a long stream 
+of events. In single-molecule fluorescence experiments, this stream is
+represented by photon arrival times (timestamps) with a resolution of a few&nbsp;nanoseconds.</p>
+<p>A common algorithm, introduced by the Seidel group
+(<a href="http://dx.doi.org/10.1021/jp980965t">Fries 1998</a>), consists in using a 
+sliding windows of duration $T$ and identifying bursts when at least $m$ photons 
+lie in this window.
+The final step is burst selection by size (i.e. counts), which is important 
+to obtain &#8220;good&#8221; burst populations, but adds only a negligible computational 
+burden and is ignored in this&nbsp;post.</p>
+<p>Numerically, we need to &#8220;slide&#8221; the window in discrete steps, and since 
+the photon arrival times are stochastic, it makes sense to place
+the windows start in correspondence with each timestamp $t_i$ and check 
+if there are at least $m$ photons between $t_i$ and $t_i +&nbsp;T$.</p>
+<p>But how can we &#8220;check if there are at least $m$ photons between 
+$t_i$ and $t_i + T$&#8221;? In principle, we can count how many photons 
+lie in the current time windows and start the burst when this number 
+is $\ge m$. 
+This would require, for each timestamp $t_i$, looping through a variable
+number of timestamps ($n$), until $t_{i+n} - t_i &gt;=T$ then check if 
+$n &gt;= m$. We would end up looping through the <code>timestamps</code> many&nbsp;times.</p>
+<p>Equivalently, we can loop over consecutive m-tuple of photons, and 
+test if the time difference between the last and the first timestamp 
+is $\le T$. This latter approach is much easier to implement and more
+efficient as it requires looping through the <code>timestamps</code> exactly&nbsp;once.</p>
+<p>For the sake of this post, we assume that each burst is characterized 
+by only a start and stop time. Since the number of bursts is not known 
+before the search, we&#8217;ll put them in a list, so that we can append 
+bursts during the&nbsp;search.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Prepare-the-data">Prepare the data<a class="anchor-link" href="#Prepare-the-data">¶</a></h1><p>To test different burst search implementation we can use a single-molecule <span class="caps">FRET</span> dataset <a href="http://figshare.com/articles/Example_smFRET_data_files_in_Photon_HDF5_format/1456362">available on figshare</a>. The file are in <a href="http://photon-hdf5.org">Photon-<span class="caps">HDF5</span></a>, so we can load its content with any <span class="caps">HDF5</span> library like <a href="http://www.pytables.org/">pytables</a>.</p>
+<p>For this post we only need to load the <code>timestamps</code> array, which is here converted in&nbsp;seconds:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">tables</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">filename</span> <span class="o">=</span> <span class="s">"data/0023uLRpitc_NTP_20dT_0.5GndCl.hdf5"</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">with</span> <span class="n">tables</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">h5file</span><span class="p">:</span>
+    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">photon_data</span><span class="o">.</span><span class="n">timestamps</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">timestamps</span><span class="o">*</span><span class="n">h5file</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">photon_data</span><span class="o">.</span><span class="n">timestamps_specs</span><span class="o">.</span><span class="n">timestamps_unit</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">timestamps</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>array([  1.83558750e-03,   2.35056250e-03,   3.67655000e-03, ...,
+         5.99998296e+02,   5.99998472e+02,   5.99999442e+02])</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">timestamps</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>2683962</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Implementation-1:-for-loop">Implementation 1: for-loop<a class="anchor-link" href="#Implementation-1:-for-loop">¶</a></h1><p>The previously described algorithm can be expressed quite naturally with a&nbsp;for-loop:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">def</span> <span class="nf">burst_search</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">T</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_burst</span><span class="p">:</span>
+                <span class="n">in_burst</span> <span class="o">=</span> <span class="k">True</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">in_burst</span><span class="p">:</span>
+            <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+            <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The code is straightforward to&nbsp;read:</p>
+<ol>
+<li>variable $i$ loops over the timestamps&nbsp;index</li>
+<li>if the $m$ consecutive photons starting at $t_i$ are within a window $\le T$<ol>
+<li>if a burst is not already started, start the burst and save the start&nbsp;time</li>
+</ol>
+</li>
+<li>Otherwise, if we are inside a burst, stop the burst and save the stop&nbsp;time</li>
+</ol>
+<p>Let&#8217;s run&nbsp;it:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_py</span> <span class="o">=</span> <span class="n">burst_search</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="nb">len</span><span class="p">(</span><span class="n">bursts_py</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+<div class="output_text output_subarea output_execute_result">
+<pre>18529</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">timeit</span> burst_search(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 loops, best of 3: 998 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So, we found 15504 bursts and the execution took around a second. Is it quick enough? In some cases absolutely yes. But, what if we have 10 times more photons (longer measurement, multi-spot, etc&#8230;) and or we want to explore a large parameter space for the burst search? What if we want to play with the parameters and plot the resulting <span class="caps">FRET</span> histogram&nbsp;interactively?</p>
+<p>In those cases we need a faster burst&nbsp;search.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Implementation-2:-for-loop-compiled">Implementation 2: for-loop compiled<a class="anchor-link" href="#Implementation-2:-for-loop-compiled">¶</a></h1><p>First step of optimization is identifying the 
+<a href="https://en.wikipedia.org/wiki/Bottleneck_(software">bottlenecks</a>). 
+In this case, the looping over &gt;2 millions of elements and 
+computing <code>times[i+m] - times[i] &lt;= T</code> at each cycle is where
+the function spends the most time. The list-appending
+add a negligible times since is performed once per burst
+(not at each&nbsp;cycle).</p>
+<p>We can confirm this analysis by running <code>line_profiler</code>
+(install it through <span class="caps">PIP</span> or conda), which gives a line-by-line
+measure of the execution&nbsp;time.</p>
+<p>For a more detailed overview of different profiling techniques
+see the excellent Cyrille Rossant&#8217;s post 
+<a href="http://cyrille.rossant.net/profiling-and-optimizing-python-code/">Profiling and optimizing Python code</a>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">load_ext</span> line_profiler
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">lprun</span> -f burst_search burst_search(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<pre><code>Timer unit: 1e-06 s
+
+Total time: 4.50356 s
+File: &lt;ipython-input-6-e29550a3433a&gt;
+Function: burst_search at line 1
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     1                                           def burst_search(times, m, T):
+     2         1            1      1.0      0.0      in_burst = False
+     3         1            1      1.0      0.0      bursts = []
+     4   2683952      1166986      0.4     25.9      for i in range(times.size - m - 1):
+     5   2683951      2176824      0.8     48.3          if times[i + m - 1] - times[i] &lt;= T:
+     6    232747       101596      0.4      2.3              if not in_burst:
+     7     18529         7970      0.4      0.2                  in_burst = True
+     8     18529        10306      0.6      0.2                  start = times[i]
+     9   2451204      1017383      0.4     22.6          elif in_burst:
+    10     18529         8031      0.4      0.2              in_burst = False
+    11     18529        14458      0.8      0.3              bursts.append((start, times[i+m-1]))
+    12         1            0      0.0      0.0      return bursts</code></pre>
+<p>The profiler comfirms that &gt;95% of the time is spent
+looping and branching, (which includes computing 
+<code>times[i + m - 1] - times[i] &lt;= T</code>).
+Assuming that the output is accurate, what was surprising 
+for me was finding that the simple branching (see line 9) 
+account for a significant fraction of the total&nbsp;time.</p>
+<p>The <code>burst_search()</code> function has a &#8220;hot&#8221; for-loop containing 
+an if-else branching that depends on array elements computations. 
+This is an example where removing the loop by vectorization is 
+not trivial. 
+Therefore the &#8220;cure&#8221; is compiling the function 
+to machine code. This can be achieved by using&nbsp;cython.</p>
+<p>Cython extends the python syntax, and allows to 
+statically translate python to C (that, eventually, needs to be compiled to 
+machine code).<br>
+To gain speed, we specify the type of variables used
+inside the loop, loosing some dynamic-typing. In this case, we know 
+that the <code>timestamps</code> is an float64 array, so declaring the type
+it&#8217;s not a big deal.</br></p>
+<p>The cython version of the previous algorithm&nbsp;becomes:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">load_ext</span> Cython
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%%</span><span class="n">cython</span>
+<span class="k">cimport</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">burst_search_cy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64_t</span><span class="p">[:]</span> <span class="n">times</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16_t</span> <span class="n">m</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64_t</span> <span class="n">T</span><span class="p">):</span>
+    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span>
+    <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">float64_t</span> <span class="nf">start</span>
+    <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">uint8_t</span> <span class="nf">in_bursts</span>
+    
+    <span class="n">in_burst</span> <span class="o">=</span> <span class="mf">0</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">m</span> <span class="o">-</span> <span class="mf">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">m</span> <span class="o">-</span> <span class="mf">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">T</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_burst</span><span class="p">:</span>
+                <span class="n">in_burst</span> <span class="o">=</span> <span class="mf">1</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">in_burst</span><span class="p">:</span>
+            <span class="n">in_burst</span> <span class="o">=</span> <span class="mf">0</span>
+            <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mf">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In the Jupyter notebook, we use the <code>%%cython</code>
+<a href="https://ipython.org/ipython-doc/dev/interactive/tutorial.html">magic command</a> 
+(included in cython) to easily compile the function.
+To compile the function outside the notebook see the
+<a href="http://docs.cython.org/">cython docs</a>.</p>
+<p>Apart from the boiler-plate import, I added type definitions to 
+the function arguments. The cython types have the same name as 
+numpy types with and additional <code>_t</code>. For the first argument
+which is an array we use the syntax <code>np.float64_t[:] times</code>
+that defines a cython <a href="http://docs.cython.org/src/userguide/memoryviews.html">Memoryview</a>
+(see also <a href="https://jakevdp.github.io/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a>).</p>
+<p>Let&#8217;s run the cython&nbsp;function:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_cy</span> <span class="o">=</span> <span class="n">burst_search_cy</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">assert</span> <span class="n">bursts_cy</span> <span class="o">==</span> <span class="n">bursts_py</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">timeit</span> burst_search_cy(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>100 loops, best of 3: 8.59 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that the cython version executes in just ~10ms, a whooping 
+100x speed increase compared to the pure python version. And all 
+we have done is adding a few variable&nbsp;declarations!</p>
+<p>Another optimization tool emegerged in the last couple of years is 
+Numba. Numba is a Just-in-Time (<span class="caps">JIT</span>) compiler which analyze the code 
+during the execution and translate it on-fly to machine code. Under 
+the hood it uses the <span class="caps">LLVM</span> compiler (only dependency is llvmlite in 
+recent versions) to translate python function to machine&nbsp;code.</p>
+<p>In principle, numba can perform more advanced optimizations than 
+cython and there are reports of 2x speed improvements vs cython
+in some specific&nbsp;cases.</p>
+<p>Numba is even easier than cython to use, requiring only a single 
+additional line, which is the decorator <code>@numba.jit</code>. Our example 
+in numba&nbsp;becomes:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">numba</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span>
+<span class="k">def</span> <span class="nf">burst_search_numba</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">T</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_burst</span><span class="p">:</span>
+                <span class="n">in_burst</span> <span class="o">=</span> <span class="k">True</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">in_burst</span><span class="p">:</span>
+            <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+            <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Preatty&nbsp;neat.</p>
+<p>The current drawback of using numba is that the automatic type 
+inference does not work 100% of the times yet (remember that Numba 
+is a relatively new project but evolving at an impressive pace). 
+For example, in the previous function I had to add the line <code>start = 0.</code> 
+to help numba infer the type of the <code>start</code> variable (an error is 
+raised&nbsp;otherwise).</p>
+<p>Also, in this particular case, numba does not show any speed 
+improvement compared to the pure python&nbsp;version:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_numba</span> <span class="o">=</span> <span class="n">burst_search_numba</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [20]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">timeit</span> burst_search_numba(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 loops, best of 3: 985 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This &#8220;slow&#8221; execution happens because current numba (version 0.20) 
+is not able to optimize this function to machine code and 
+falls back to a pure python&nbsp;implementation.</p>
+<p>I&#8217;m not sure what prevents numba to optimize this function 
+(hey numba experts, please leave a comment!), but I would not 
+be surprised if this corner cases will be handled pretty&nbsp;soon.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Implementation-3:-vectorized-numpy">Implementation 3: vectorized numpy<a class="anchor-link" href="#Implementation-3:-vectorized-numpy">¶</a></h1><p>It may be not easily to spot at first glance, but we can also
+get a some speed-up using pure python + numpy. We will not 
+completely remove the for-loop but we will move some heavy 
+computation out of&nbsp;it.</p>
+<p>As shown before, the bottleneck is the operation 
+<code>t[i+m] - t[i] &lt;= T</code>. In particular the array element access 
+is quite&nbsp;slow.</p>
+<p>At cost of higher memory usage we can perform the difference 
+outside the&nbsp;loop:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [21]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">def</span> <span class="nf">burst_search_numpy1</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">delta_t</span> <span class="o">=</span> <span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[:</span><span class="n">times</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">delta_t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">T</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_burst</span><span class="p">:</span>
+                <span class="n">in_burst</span> <span class="o">=</span> <span class="k">True</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">in_burst</span><span class="p">:</span>
+            <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+            <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [22]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_numpy1</span> <span class="o">=</span> <span class="n">burst_search_numpy1</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">bursts_numpy1</span> <span class="o">==</span> <span class="n">bursts_py</span>
+<span class="o">%</span><span class="k">timeit</span> burst_search_numpy1(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 loops, best of 3: 418 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>we got a 2x speed improvement, not&nbsp;bad.</p>
+<p>Thinking further on this line, we can also move the comparison 
+outside the&nbsp;loop:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [23]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">def</span> <span class="nf">burst_search_numpy2</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">above_min_rate</span> <span class="o">=</span> <span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[:</span><span class="n">times</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">T</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">above_min_rate</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">test</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_burst</span><span class="p">:</span>
+                <span class="n">in_burst</span> <span class="o">=</span> <span class="k">True</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">in_burst</span><span class="p">:</span>
+            <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+            <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [24]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_numpy2</span> <span class="o">=</span> <span class="n">burst_search_numpy2</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">bursts_numpy2</span> <span class="o">==</span> <span class="n">bursts_py</span>
+<span class="o">%</span><span class="k">timeit</span> burst_search_numpy2(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 loops, best of 3: 282 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The line profiler shows that the simple item access (line 6) takes 30% of the time.
+This is not surprising because numpy has some overhead when accessing a single
+element because of all the fancy indexing it supports. Since here we are simply
+iterating over all the elements we can use the iterator to get the array&nbsp;elements.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [25]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">def</span> <span class="nf">burst_search_numpy3</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">max_index</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">above_min_rate</span> <span class="o">=</span> <span class="p">((</span><span class="n">times</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[:</span><span class="n">max_index</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">T</span><span class="p">)[:</span><span class="n">max_index</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">above_min_rate_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">above_min_rate</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">above_min_rate_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_burst</span><span class="p">:</span>
+                <span class="n">in_burst</span> <span class="o">=</span> <span class="k">True</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">in_burst</span><span class="p">:</span>
+            <span class="n">in_burst</span> <span class="o">=</span> <span class="k">False</span>
+            <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [26]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_numpy3</span> <span class="o">=</span> <span class="n">burst_search_numpy3</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">bursts_numpy3</span> <span class="o">==</span> <span class="n">bursts_py</span>
+<span class="o">%</span><span class="k">timeit</span> burst_search_numpy3(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 loops, best of 3: 223 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we can optimize line 13, the else branch that is executed at almost every cycle.
+To avoid this test we can slightly unwrap the&nbsp;loop:</p>
+<ul>
+<li>first we <code>continue</code> if not above the&nbsp;rate.</li>
+<li>when &#8220;not continuing&#8221;, we are inside a burst and we do a mini internal loop until the burst is&nbsp;over</li>
+<li>the main loop resumes from a position updated by the inner&nbsp;loop</li>
+</ul>
+<p>The trick is using the same iterator in the two nested&nbsp;loops:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [27]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="k">def</span> <span class="nf">burst_search_numpy4</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+    <span class="n">bursts</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="n">max_index</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">above_min_rate</span> <span class="o">=</span> <span class="p">((</span><span class="n">times</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">times</span><span class="p">[:</span><span class="n">max_index</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">T</span><span class="p">)[:</span><span class="n">max_index</span><span class="p">]</span>
+
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">above_min_rate</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">above_min_rate_</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">above_min_rate_</span><span class="p">:</span> <span class="k">continue</span>           
+        
+        <span class="n">start</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">above_min_rate_</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">above_min_rate_</span><span class="p">:</span> <span class="k">break</span>
+        
+        <span class="n">bursts</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">bursts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [28]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bursts_numpy4</span> <span class="o">=</span> <span class="n">burst_search_numpy4</span><span class="p">(</span><span class="n">timestamps</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">bursts_numpy4</span> <span class="o">==</span> <span class="n">bursts_py</span>
+<span class="o">%</span><span class="k">timeit</span> burst_search_numpy4(timestamps, 10, 100e-6)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 loops, best of 3: 202 ms per loop
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This last two optimizations cut another 25% to the execution time.
+More importantly, the code is easier to read, mainly because
+we eliminated the state variable <code>in_burst</code>.</p>
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h1><p>We started with a direct pure-python algorithm implementation and we found
+how to optimize it in cython obtaining a 100x (100 folds)&nbsp;speed-up.</p>
+<p>The burst search algorithm is not easy to vectorize, but 
+a careful analysis of the bottlenecks allowed 
+to obtain a 5x speed-up using only python +&nbsp;numpy.</p>
+<p>In most of cases, the speed of a python + numpy implementation 
+is more than enough. For rare performance-critical functions, 
+C-level performances can be achieved by using cython or&nbsp;numba.</p>
+<p>But optimization must always performed as last step, and only
+focusing on the bottlenecks highlighted by the profiler.
+When in doubt, prefer clarity over&nbsp;speed.</p>
+<h1 id="See-also">See also<a class="anchor-link" href="#See-also">¶</a></h1><ul>
+<li><a href="http://tritemio.github.io/FRETBursts/">FRETBursts</a> A burst analysis 
+software implementing the techniques illustrated in this post 
+in a more complete real-world&nbsp;scenario.</li>
+</ul>
+</div>
+</div>
+</div>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['$','$'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://www.biophysics.org/">Biophysical Society</a></li>
+                            <li><a href="http://planet.scipy.org/">Planet Scipy</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/tritemio_sc">Twitter</a></li>
+                            <li><a href="http://github.com/tritemio">GitHub</a></li>
+                            <li><a href="https://www.researchgate.net/profile/Antonino_Ingargiola">ResearchGate</a></li>
+                            <li><a href="https://ucla.academia.edu/AntoninoIngargiola">Academia.edu</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'smbits';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
