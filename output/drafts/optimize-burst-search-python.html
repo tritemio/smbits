@@ -118,7 +118,7 @@
 burst search algorithm is the central step that allows identifying 
 and quantify single molecule fluorescence. In this post, I use the 
 sliding-window burst search algorithm 
-(<a href="http://dx.doi.org/10.1021/jp980965t">Fries 1998</a>) as an pretext to 
+(<a href="http://dx.doi.org/10.1021/jp980965t">Fries 1998</a>) as a real-world example to 
 illustrate some typical optimization techniques commonly used in python, 
 namely vectorization (numpy) and compilation to machine code (cython, numba).
 I will use a simplified burst search that saves only start and stop times
@@ -139,9 +139,8 @@ represented by photon arrival times (timestamps) with a resolution of a few&nbsp
 (<a href="http://dx.doi.org/10.1021/jp980965t">Fries 1998</a>), consists in using a 
 sliding windows of duration $T$ and identifying bursts when at least $m$ photons 
 lie in this window.
-The final step is burst selection by size (i.e. counts), which is important 
-to obtain &#8220;good&#8221; burst populations, but adds only a negligible computational 
-burden and is ignored in this&nbsp;post.</p>
+The final step of selecting bursts by size (counts, or number of photons)
+is computationally inexpensive and it will be ignored in this&nbsp;post.</p>
 <p>Numerically, we need to &#8220;slide&#8221; the window in discrete steps, and since 
 the photon arrival times are stochastic, it makes sense to place
 the windows start in correspondence with each timestamp $t_i$ and check 
@@ -152,15 +151,15 @@ lie in the current time windows and start the burst when this number
 is $\ge m$. 
 This would require, for each timestamp $t_i$, looping through a variable
 number of timestamps ($n$), until $t_{i+n} - t_i &gt;=T$ then check if 
-$n &gt;= m$. We would end up looping through the <code>timestamps</code> many&nbsp;times.</p>
+$n &gt;= m$. In total, we would loop through the full <code>timestamps</code> array many&nbsp;times.</p>
 <p>Equivalently, we can loop over consecutive m-tuple of photons, and 
 test if the time difference between the last and the first timestamp 
 is $\le T$. This latter approach is much easier to implement and more
 efficient as it requires looping through the <code>timestamps</code> exactly&nbsp;once.</p>
 <p>For the sake of this post, we assume that each burst is characterized 
-by only a start and stop time. Since the number of bursts is not known 
-before the search, we&#8217;ll put them in a list, so that we can append 
-bursts during the&nbsp;search.</p>
+by only a start and stop time. Finally, since the number of bursts 
+is not known in advance, we&#8217;ll use a list to collect the bursts
+found during the&nbsp;search.</p>
 </div>
 </div>
 </div>
@@ -169,7 +168,7 @@ bursts during the&nbsp;search.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Prepare-the-data">Prepare the data<a class="anchor-link" href="#Prepare-the-data">¶</a></h1><p>To test different burst search implementation we can use a single-molecule <span class="caps">FRET</span> dataset <a href="http://figshare.com/articles/Example_smFRET_data_files_in_Photon_HDF5_format/1456362">available on figshare</a>. The file are in <a href="http://photon-hdf5.org">Photon-<span class="caps">HDF5</span></a>, so we can load its content with any <span class="caps">HDF5</span> library like <a href="http://www.pytables.org/">pytables</a>.</p>
+<h1 id="Prepare-the-data">Prepare the data<a class="anchor-link" href="#Prepare-the-data">¶</a></h1><p>To test different burst search implementation we can use a single-molecule <span class="caps">FRET</span> dataset <a href="http://figshare.com/articles/Example_smFRET_data_files_in_Photon_HDF5_format/1456362">available on figshare</a>. The file are in <a href="http://photon-hdf5.org">Photon-<span class="caps">HDF5</span></a>, so we can load its content with a <span class="caps">HDF5</span> library, such as <a href="http://www.pytables.org/">pytables</a>.</p>
 <p>For this post we only need to load the <code>timestamps</code> array, which is here converted in&nbsp;seconds:</p>
 </div>
 </div>
@@ -289,7 +288,7 @@ bursts during the&nbsp;search.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The code is straightforward to&nbsp;read:</p>
 <ol>
-<li>variable $i$ loops over the timestamps&nbsp;index</li>
+<li>the $i$ variable loops over the timestamps&nbsp;index</li>
 <li>if the $m$ consecutive photons starting at $t_i$ are within a window $\le T$<ol>
 <li>if a burst is not already started, start the burst and save the start&nbsp;time</li>
 </ol>
@@ -345,7 +344,7 @@ bursts during the&nbsp;search.</p>
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>1 loops, best of 3: 998 ms per loop
+<pre>1 loops, best of 3: 935 ms per loop
 </pre>
 </div>
 </div>
@@ -357,8 +356,13 @@ bursts during the&nbsp;search.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So, we found 15504 bursts and the execution took around a second. Is it quick enough? In some cases absolutely yes. But, what if we have 10 times more photons (longer measurement, multi-spot, etc&#8230;) and or we want to explore a large parameter space for the burst search? What if we want to play with the parameters and plot the resulting <span class="caps">FRET</span> histogram&nbsp;interactively?</p>
-<p>In those cases we need a faster burst&nbsp;search.</p>
+<p>So, we found 18529 bursts and the execution took around a second. 
+It seems we got the results &#8220;fast enough&#8221;. However, 
+when dealing with larger files (longer measurement, multi-spot, etc&#8230;) 
+or when we need to interactively explore the effect of burst serach 
+parameters on burst populations
+we need a faster burst&nbsp;search.</p>
+<p>Next sections show various optimization&nbsp;approches.</p>
 </div>
 </div>
 </div>
@@ -367,12 +371,12 @@ bursts during the&nbsp;search.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Implementation-2:-for-loop-compiled">Implementation 2: for-loop compiled<a class="anchor-link" href="#Implementation-2:-for-loop-compiled">¶</a></h1><p>First step of optimization is identifying the 
-<a href="https://en.wikipedia.org/wiki/Bottleneck_(software">bottlenecks</a>). 
+<h1 id="Implementation-2:-for-loop-compiled">Implementation 2: for-loop compiled<a class="anchor-link" href="#Implementation-2:-for-loop-compiled">¶</a></h1><p>First step of optimization is always identifying the 
+<a href="https://en.wikipedia.org/wiki/Bottleneck_(software">bottlenecks</a>. 
 In this case, the looping over &gt;2 millions of elements and 
 computing <code>times[i+m] - times[i] &lt;= T</code> at each cycle is where
 the function spends the most time. The list-appending
-add a negligible times since is performed once per burst
+adds a negligible time since is performed once per burst
 (not at each&nbsp;cycle).</p>
 <p>We can confirm this analysis by running <code>line_profiler</code>
 (install it through <span class="caps">PIP</span> or conda), which gives a line-by-line
@@ -433,22 +437,21 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
 <p>The profiler comfirms that &gt;95% of the time is spent
 looping and branching, (which includes computing 
 <code>times[i + m - 1] - times[i] &lt;= T</code>).
-Assuming that the output is accurate, what was surprising 
-for me was finding that the simple branching (see line 9) 
-account for a significant fraction of the total&nbsp;time.</p>
+It was was surprising, for me, to find that the simple 
+branching (see line 9) account for a significant fraction of 
+the total&nbsp;time.</p>
 <p>The <code>burst_search()</code> function has a &#8220;hot&#8221; for-loop containing 
 an if-else branching that depends on array elements computations. 
-This is an example where removing the loop by vectorization is 
+This is an example where removing the loop through vectorization is 
 not trivial. 
 Therefore the &#8220;cure&#8221; is compiling the function 
 to machine code. This can be achieved by using&nbsp;cython.</p>
 <p>Cython extends the python syntax, and allows to 
 statically translate python to C (that, eventually, needs to be compiled to 
 machine code).<br>
-To gain speed, we specify the type of variables used
-inside the loop, loosing some dynamic-typing. In this case, we know 
-that the <code>timestamps</code> is an float64 array, so declaring the type
-it&#8217;s not a big deal.</br></p>
+To gain speed, we specify the types for variables used
+inside the loop, loosing indeed some dynamic-typing. In this case, we know 
+that <code>timestamps</code> is an float64 array.</br></p>
 <p>The cython version of the previous algorithm&nbsp;becomes:</p>
 </div>
 </div>
@@ -500,9 +503,9 @@ it&#8217;s not a big deal.</br></p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In the Jupyter notebook, we use the <code>%%cython</code>
 <a href="https://ipython.org/ipython-doc/dev/interactive/tutorial.html">magic command</a> 
-(included in cython) to easily compile the function.
-To compile the function outside the notebook see the
-<a href="http://docs.cython.org/">cython docs</a>.</p>
+(included in the <code>cython</code> package) to easily compile the function.
+Outside the notebook, we can setup <code>distutils</code> (or <code>setuptools</code>) to handle the
+compilation step (see <a href="http://docs.cython.org/">cython documentation</a>).</p>
 <p>Apart from the boiler-plate import, I added type definitions to 
 the function arguments. The cython types have the same name as 
 numpy types with and additional <code>_t</code>. For the first argument
@@ -549,7 +552,7 @@ that defines a cython <a href="http://docs.cython.org/src/userguide/memoryviews.
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>100 loops, best of 3: 8.59 ms per loop
+<pre>100 loops, best of 3: 8.19 ms per loop
 </pre>
 </div>
 </div>
@@ -566,12 +569,12 @@ that defines a cython <a href="http://docs.cython.org/src/userguide/memoryviews.
 we have done is adding a few variable&nbsp;declarations!</p>
 <p>Another optimization tool emegerged in the last couple of years is 
 Numba. Numba is a Just-in-Time (<span class="caps">JIT</span>) compiler which analyze the code 
-during the execution and translate it on-fly to machine code. Under 
-the hood it uses the <span class="caps">LLVM</span> compiler (only dependency is llvmlite in 
-recent versions) to translate python function to machine&nbsp;code.</p>
+during the execution and translates it to machine code on-fly. Under 
+the hood it uses the <a href="https://en.wikipedia.org/wiki/LLVM"><span class="caps">LLVM</span> compiler</a> 
+to translate python function to machine&nbsp;code.</p>
 <p>In principle, numba can perform more advanced optimizations than 
-cython and there are reports of 2x speed improvements vs cython
-in some specific&nbsp;cases.</p>
+cython and there are, in some cases, reports of 2x speed improvements 
+vs&nbsp;cython.</p>
 <p>Numba is even easier than cython to use, requiring only a single 
 additional line, which is the decorator <code>@numba.jit</code>. Our example 
 in numba&nbsp;becomes:</p>
@@ -655,7 +658,7 @@ improvement compared to the pure python&nbsp;version:</p>
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>1 loops, best of 3: 985 ms per loop
+<pre>1 loops, best of 3: 973 ms per loop
 </pre>
 </div>
 </div>
@@ -732,7 +735,7 @@ outside the&nbsp;loop:</p>
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>1 loops, best of 3: 418 ms per loop
+<pre>1 loops, best of 3: 416 ms per loop
 </pre>
 </div>
 </div>
@@ -790,7 +793,7 @@ outside the&nbsp;loop:</p>
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>1 loops, best of 3: 282 ms per loop
+<pre>1 loops, best of 3: 281 ms per loop
 </pre>
 </div>
 </div>
@@ -916,7 +919,7 @@ To avoid this test we can slightly unwrap the&nbsp;loop:</p>
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>1 loops, best of 3: 202 ms per loop
+<pre>1 loops, best of 3: 205 ms per loop
 </pre>
 </div>
 </div>
@@ -939,7 +942,7 @@ to obtain a 5x speed-up using only python +&nbsp;numpy.</p>
 <p>In most of cases, the speed of a python + numpy implementation 
 is more than enough. For rare performance-critical functions, 
 C-level performances can be achieved by using cython or&nbsp;numba.</p>
-<p>But optimization must always performed as last step, and only
+<p>But optimization must always be performed as last step, and only
 focusing on the bottlenecks highlighted by the profiler.
 When in doubt, prefer clarity over&nbsp;speed.</p>
 <h1 id="See-also">See also<a class="anchor-link" href="#See-also">¶</a></h1><ul>
@@ -947,6 +950,17 @@ When in doubt, prefer clarity over&nbsp;speed.</p>
 software implementing the techniques illustrated in this post 
 in a more complete real-world&nbsp;scenario.</li>
 </ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython3"><pre> 
+</pre></div>
+</div>
 </div>
 </div>
 </div>
