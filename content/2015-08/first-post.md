@@ -21,7 +21,7 @@ For readers new to project Jupyter I put here some references:
 - [Interactive notebooks: Sharing the code,
   **Nature** 515, 151–152 (2014) doi:10.1038/515151a](http://www.nature.com/news/interactive-notebooks-sharing-the-code-1.16261)
 - [Jupyter/IPython Notebook Quick Start Guide](http://jupyter-notebook-beginner-guide.readthedocs.org/)
-- [Jupyter Notebook Official Docs]()
+- [Jupyter Notebook Official Docs](http://jupyter-notebook.readthedocs.org/)
 
 ## Technical bits
 
