@@ -37,7 +37,7 @@
                 By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
         </address>
 <p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
-<p>tags: <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> <a href="http://tritemio.github.io/smbits/tag/numpy.html">numpy</a> <a href="http://tritemio.github.io/smbits/tag/binary-data.html">binary data</a> </p>
+<p>tags: <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> <a href="http://tritemio.github.io/smbits/tag/numpy.html">numpy</a> <a href="http://tritemio.github.io/smbits/tag/buffer-interface.html">buffer interface</a> <a href="http://tritemio.github.io/smbits/tag/binary-data.html">binary data</a> </p>
 </footer><!-- /.post-info -->      <style type="text/css">/*!
 *
 * IPython notebook
@@ -116,8 +116,7 @@ Oftentimes data is encoded in binary numeric types, structures of numeric types 
 <p>Here I assume we are dealing with &#8220;medium-data&#8221;, which is, using <a href="https://twitter.com/wesmckinn/status/413159516096585729">Wes McKinney words</a>:</p>
 <blockquote><p>Medium Data (n): Not too big for a single machine, but too big to be dumb&nbsp;about.</p>
 </blockquote>
-<p>We can easily and efficiently read this kind of data using the cornerstone of numeric computing in Pyhton: the numpy library. In this post I show the powerful tools numpy
-offers to read and &#8220;interpret&#8221; binary&nbsp;data.</p>
+<p>We can easily and efficiently read this kind of data using Numpy, the foundational library for any numeric computing in Python. In this post I show the powerful tools numpy offers to &#8220;interpret&#8221; (or decode) binary&nbsp;data.</p>
 
 </div>
 </div>
@@ -127,7 +126,7 @@ offers to read and &#8220;interpret&#8221; binary&nbsp;data.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="A-Binary-example">A Binary example<a class="anchor-link" href="#A-Binary-example">&#182;</a></h2><p>Lately, I had to read data from a new instrument that sends to the <span class="caps">PC</span> &#8220;words&#8221; of 48&nbsp;bits.</p>
+<h2 id="An-example-of-binary-data">An example of binary-data<a class="anchor-link" href="#An-example-of-binary-data">&#182;</a></h2><p>Recently, I had to read data from a new instrument that sends to the <span class="caps">PC</span> &#8220;words&#8221; of 48&nbsp;bits.</p>
 <p>The bit layout of the word&nbsp;is:</p>
 <p>[placeholder]</p>
 <p>Within each word, the byte order goes from byte1 (the first) to byte6 (the last).
@@ -135,27 +134,27 @@ The word is comprised of three numeric fields <code>MT</code>, <code>mT</code>, 
 <p>For the numeric fields, the bit order in parenthesis shows that the most-significant-bit (<span class="caps">MSB</span>) is encountered first when reading the word orderly from the first to the last bit. This byte order is called <a href="https://en.wikipedia.org/wiki/Endianness">big-endian</a> (often indicated by&nbsp;&#8216;&gt;&#8217;).</p>
 <p>This example can seem fairly convoluted, but is quite common in data from scientific&nbsp;instruments.</p>
 <p>Let&#8217;s see how we can decode this data, easily and efficiently, using&nbsp;numpy.</p>
-<h2 id="Numpy-dtype-magics">Numpy dtype magics<a class="anchor-link" href="#Numpy-dtype-magics">&#182;</a></h2><p>This section is a brief digression to introduce numpy&#8217;s dtype system 
+<h2 id="Numpy-magics:-dtype-system">Numpy magics: dtype system<a class="anchor-link" href="#Numpy-magics:-dtype-system">&#182;</a></h2><p>This section is a brief digression to introduce numpy&#8217;s dtype system 
 and arrays &#8220;views&#8221; of binary&nbsp;buffers.</p>
 <p>One of the most powerful features of numpy is providing a flexible 
 memory model to access numeric data in arbitrary&nbsp;layouts.</p>
-<p>At the core of the numpy library there is the ndarray object, i.e. 
-a multi-dimentional array of homogeneous data&nbsp;type.</p>
+<p>At the core of the numpy library there is the <a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html">ndarray object</a>, 
+i.e. a multi-dimentional array of homogeneous data&nbsp;type.</p>
 <p>The crucial point is: what does numpy accept as homogeneous data&nbsp;type?</p>
-<p>Beign a numeric library, we can use all the standard numeric type like 
+<p>We can certaintly use all the standard numeric type like 
 integers (signed or unsigned with 8, 16, 32 or 64 bits) or floats 
 (16, 32, 64) or even complex numbers (internally a pair of&nbsp;floats).</p>
 <p>But what if we want to define a more complex&nbsp;structure?</p>
-<p>Numpy allows defining structures to be used as array elements by 
-defining a custom <code>dtype</code> object. For example, to define a structure 
-of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
+<p>Numpy allows defining structures to be used as array elements: we just
+need to define a <code>dtype</code> describing such a structure. For example, 
+to define a structure of a <code>unit16</code> followed by a <code>float16</code> we&nbsp;write:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -168,13 +167,30 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">custom_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;humidity&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">)])</span>
+<span class="n">custom_dtype</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dtype([(&apos;time&apos;, &apos;&lt;i2&apos;), (&apos;humidity&apos;, &apos;&lt;f2&apos;)])</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -184,15 +200,20 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For general usage of <code>np.dtype()</code> see the comprehensive <a href="http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html">dtype documentation</a>.</p>
-<p>We can build an array of such a structure specifying the dtype argument (present on almost all numpy functions returning arrays). For&nbsp;examples:</p>
+<p>Note that we assigned a name to each field in the structure, in this case
+&#8220;time&#8221; (a 16-bit integer) and &#8220;humidity&#8221; (a 16-bit float). The &#8216;&lt;&#8217; sign in
+the representation indicated little-endian byte order.
+For alternative syntax to define a new <code>dtype</code> see the comprehensive 
+<a href="http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html">dtype documentation</a>.</p>
+<p>We can build an array of such a structure specifying the <code>dtype</code> argument 
+(accepted by the majority of numpy functions returning arrays) like&nbsp;this:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">custom_dtype</span><span class="p">)</span>
@@ -207,7 +228,7 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[62]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -226,9 +247,11 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Here we defined a 6-element array. Each element has 4 bytes: the first 2 contain a little-endian integer (<code>'&lt;i8'</code>) and the last 2 bytes a little-endian 16-bit float (<code>'&lt;f2'</code>).</p>
+<p>The previous command defined a 6-element array. Each element of the array is the
+previously defined structure. Arrays with custom dtypeas are called in numpy
+<a href="http://docs.scipy.org/doc/numpy-1.10.1/user/basics.rec.html">structured arrays</a>.</p>
 <p>Let&#8217;s see a few example of what we can do with such an&nbsp;array.</p>
-<p><strong>Scalar to array&nbsp;broadcast:</strong></p>
+<h3 id="1.-Scalar-to-array-broadcast">1. Scalar to array broadcast<a class="anchor-link" href="#1.-Scalar-to-array-broadcast">&#182;</a></h3><p>Add 10 to all the <code>time</code> fields:</p>
 
 </div>
 </div>
@@ -269,7 +292,7 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Array&nbsp;assignment:</strong></p>
+<h3 id="2.-Assign-data">2. Assign data<a class="anchor-link" href="#2.-Assign-data">&#182;</a></h3><p>Assign data to <code>time</code> and <code>humidity</code> fields:</p>
 
 </div>
 </div>
@@ -312,7 +335,7 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Indexing  and&nbsp;slicing:</strong></p>
+<h3 id="3.-Indexing--and-slicing">3. Indexing  and slicing<a class="anchor-link" href="#3.-Indexing--and-slicing">&#182;</a></h3><p>Take element number 3 (the 4th element) of the&nbsp;array:</p>
 
 </div>
 </div>
@@ -345,6 +368,17 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A single element contains two values of the two&nbsp;fields.</p>
+<p>Next, let&#8217;s take a slice starting at 1 and taking every 2&nbsp;elements:</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -381,8 +415,17 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>View with different&nbsp;dtype:</strong></p>
+<p>This is a new structure array with only the selected&nbsp;elements.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4.-View-with-different-dtype">4. View with different dtype<a class="anchor-link" href="#4.-View-with-different-dtype">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -446,7 +489,63 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Let&#x27;s-decode!">Let&#8217;s decode!<a class="anchor-link" href="#Let&#x27;s-decode!">&#182;</a></h2><p>Coming back to the previous example, we recognize that data has <code>MT</code> and <code>mT</code> aligned at 32 bit and 16 bit boundaries with big-endian&nbsp;representation.</p>
+<h2 id="Let&#x27;s-decode!">Let&#8217;s decode!<a class="anchor-link" href="#Let&#x27;s-decode!">&#182;</a></h2><p>Before starting let&#8217;s define a dummy binay&nbsp;buffer:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[103]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">buff</span> <span class="o">=</span> <span class="n">b</span><span class="s">&#39;</span><span class="se">\xFF</span><span class="s">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[104]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="nb">len</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[104]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>24</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In a real world situation this buffer would be read from disc using something&nbsp;like:</p>
+
+<pre><code>with open('datafile.dat', 'br') as f:
+    buff = f.read()</code></pre>
+<p>Coming back to the previous example, we recognize that data has <code>MT</code> and <code>mT</code> aligned at 32 bit and 16 bit boundaries with big-endian&nbsp;representation.</p>
 <p>To access those fields we can simply interpret the binary data with the following&nbsp;dtype:</p>
 
 </div>
@@ -454,10 +553,282 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[105]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">dtype_fields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;timestamps&#39;</span><span class="p">,</span> <span class="s">&#39;&gt;u4&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;nanotimes&#39;</span><span class="p">,</span> <span class="s">&#39;&gt;u2&#39;</span><span class="p">)])</span>
+<span class="n">dtype_fields</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[105]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dtype([(&apos;timestamps&apos;, &apos;&gt;u4&apos;), (&apos;nanotimes&apos;, &apos;&gt;u2&apos;)])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We only need to copy the bits <span class="caps">CH</span>, <span class="caps">OV</span>, #B first, and then set them to 0 in the original buffer.
+This operation is easier if we had direct access to the byte contining the 3 bits to save.
+Easy enough, this byte can be accessed defining a second&nbsp;dtype:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[106]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">dtype_bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;byte%d&#39;</span> <span class="o">%</span> <span class="n">b</span><span class="p">,</span> <span class="s">&#39;u1&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)])</span>
+<span class="n">dtype_bytes</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[106]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dtype([(&apos;byte0&apos;, &apos;u1&apos;), (&apos;byte1&apos;, &apos;u1&apos;), (&apos;byte2&apos;, &apos;u1&apos;), (&apos;byte3&apos;, &apos;u1&apos;), (&apos;byte4&apos;, &apos;u1&apos;), (&apos;byte5&apos;, &apos;u1&apos;)])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can &#8220;view&#8221; this binary buffer according to the two different dtypes
+we previously&nbsp;defined:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[107]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_fields</span><span class="p">)</span>
+<span class="n">data</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[107]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([(4294967295, 65535), (4294967295, 65535), (4294967295, 65535),
+       (4294967295, 65535)], 
+      dtype=[(&apos;timestamps&apos;, &apos;&gt;u4&apos;), (&apos;nanotimes&apos;, &apos;&gt;u2&apos;)])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[108]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">datab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_bytes</span><span class="p">)</span>
+<span class="n">datab</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[108]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([(255, 255, 255, 255, 255, 255), (255, 255, 255, 255, 255, 255),
+       (255, 255, 255, 255, 255, 255), (255, 255, 255, 255, 255, 255)], 
+      dtype=[(&apos;byte0&apos;, &apos;u1&apos;), (&apos;byte1&apos;, &apos;u1&apos;), (&apos;byte2&apos;, &apos;u1&apos;), (&apos;byte3&apos;, &apos;u1&apos;), (&apos;byte4&apos;, &apos;u1&apos;), (&apos;byte5&apos;, &apos;u1&apos;)])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>By creating an array from an already existing buffer the data is not
+copied, is just interpreted according to the passed dtype. In this
+example <code>data</code> and <code>datab</code> point to the same binary content
+in memory, they simply &#8220;view&#8221; the data differently, or 
+they provide different interfaces to the same&nbsp;data.</p>
+<p>We can use <code>datab['byte1']</code> as a normal array containing uint8&nbsp;elements:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[109]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">datab</span><span class="p">[</span><span class="s">&#39;byte0&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[109]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([255, 255, 255, 255], dtype=uint8)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let start copying the 3 bits in another&nbsp;array:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[110]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bitfields</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;u1&#39;</span><span class="p">)</span>
+<span class="n">bitfields</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[110]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([0, 0, 0, 0], dtype=uint8)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[111]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">bitfields</span> <span class="o">=</span> <span class="n">datab</span><span class="p">[</span><span class="s">&#39;byte0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">np</span><span class="o">.</span><span class="n">right_shift</span><span class="p">(</span><span class="n">bitfields</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">bitfields</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[111]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([7, 7, 7, 7], dtype=uint8)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then we can set the 3 bit to 0 in the orginal&nbsp;buffer:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[112]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">datab</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">writeable</span> <span class="o">=</span> <span class="k">True</span>
+<span class="n">datab</span><span class="p">[</span><span class="s">&#39;byte1&#39;</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="mh">0x00111111</span>
 </pre></div>
 
 </div>
@@ -470,19 +841,19 @@ of a <code>unit16</code> and a <code>float16</code> we&nbsp;write:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We only need to copy the other bits in <span class="caps">CH</span>, <span class="caps">OV</span>, #B and set them to 0 in the original buffer.
-Would be convenient to access the single bytes, operation easily accomplished by defining a second&nbsp;dtype:</p>
+<p>Note that we need to set the array flag <code>writable</code> to True
+in order to be alble to modify the buffer. Having modified
+the buffer also <code>data</code> sees the modified&nbsp;values:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[86]:</div>
+<div class="prompt input_prompt">In&nbsp;[113]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="n">dtype_bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">([(</span><span class="s">&#39;byte%d&#39;</span> <span class="o">%</span> <span class="n">b</span><span class="p">,</span> <span class="s">&#39;u1&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)])</span>
-<span class="n">dtype_bytes</span>
+<div class=" highlight hl-ipython3"><pre><span class="n">data</span>
 </pre></div>
 
 </div>
@@ -493,11 +864,42 @@ Would be convenient to access the single bytes, operation easily accomplished by
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[86]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[113]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>dtype([(&apos;byte1&apos;, &apos;u1&apos;), (&apos;byte2&apos;, &apos;u1&apos;), (&apos;byte3&apos;, &apos;u1&apos;), (&apos;byte4&apos;, &apos;u1&apos;)])</pre>
+<pre>array([(4279369727, 65535), (4279369727, 65535), (4279369727, 65535),
+       (4279369727, 65535)], 
+      dtype=[(&apos;timestamps&apos;, &apos;&gt;u4&apos;), (&apos;nanotimes&apos;, &apos;&gt;u2&apos;)])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[114]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="n">data</span><span class="p">[</span><span class="s">&#39;timestamps&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[114]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([4279369727, 4279369727, 4279369727, 4279369727], dtype=uint32)</pre>
 </div>
 
 </div>
