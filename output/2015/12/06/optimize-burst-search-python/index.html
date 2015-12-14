@@ -168,16 +168,13 @@ is computationally inexpensive and it will be ignored in this&nbsp;post.</p>
 photon arrival times are stochastic, it makes sense to place
 the windows start in correspondence with each timestamp $t_i$ and check 
 if there are at least $m$ photons between $t_i$ and $t_i +&nbsp;T$.</p>
-<p>But how can we &#8220;check if there are at least $m$ photons between 
-$t_i$ and $t_i + T$&#8221;? In principle, we can count how many photons 
-lie in the current time windows and start the burst if there are at least $m$. 
-This would require, for each timestamp $t_i$, looping through a variable
-number of timestamps ($n$), until $t_{i+n} - t_i >=T$ then check if 
-$n >= m$. In total, we would loop through the full <code>timestamps</code> array many&nbsp;times.</p>
-<p>Equivalently, we can loop over consecutive m-tuple of photons, and 
-test if the time difference between the last and the first timestamp 
-is $\le T$. This latter approach is much easier to implement and more
-efficient as it requires looping through the <code>timestamps</code> exactly&nbsp;once.</p>
+<p>But how can we &#8220;check if there are $\le m$ photons between 
+$t_i$ and $t_i + T$&#8221;? We can take a window $T$ and test if it
+contains at least $m$ photon, or, we can take $m$ consecutive photons ($m$ fixed)
+and test if they lie in a time window $\le T$. 
+The latter approach is much easier to implement and more
+efficient, as it requires looping through the <code>timestamps</code> only once.
+In this post we&#8217;ll follow this latter&nbsp;method.</p>
 <p>For the sake of this post, we assume that each burst is characterized 
 by only a start and stop time. Finally, since the number of bursts 
 is not known in advance, we&#8217;ll use a list to collect the bursts
