@@ -294,7 +294,7 @@ found during the&nbsp;search.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="A-pure-python-implementation">A pure-python implementation<a class="anchor-link" href="#A-pure-python-implementation">&#182;</a></h1><p>The previously described algorithm can be expressed quite naturally with a&nbsp;for-loop:</p>
+<h1 id="A-pure-python-implementation">A pure-python implementation<a class="anchor-link" href="#A-pure-python-implementation">&#182;</a></h1><p>The algorithm previously described can be expressed quite naturally with a&nbsp;for-loop:</p>
 
 </div>
 </div>
@@ -439,7 +439,7 @@ and in the next sections I&#8217;ll show various optimization&nbsp;approaches.</
 To measure the execution time we can use the <code>%prun</code> magic in IPython
 which calls the standard python profiler and measures the time spent 
 in each function call. In this case, however, a line-by-line measure 
-would be more insightful. Therefore we will use 
+is more insightful. Therefore we will use 
 <code>line_profiler</code>, a package available through <span class="caps">PIP</span> or conda.
 For a more detailed overview of different profiling techniques
 see the excellent post by Cyrille Rossant
@@ -503,8 +503,8 @@ the function spends the most time. The list-appending, conversely,
 adds a negligible contribution since it is performed once per burst
 (not at each&nbsp;cycle).</p>
 <h1 id="Memoryview-in-pure-python">Memoryview in pure-python<a class="anchor-link" href="#Memoryview-in-pure-python">&#182;</a></h1><p>Numpy arrays are notoriously slow when accessed element by element.
-Therefore a big portion of line 5 execution time may be due to numpy arrary indexing.
-We can prove this by expanding line 5 in multiple lines to separate the element 
+Therefore, a big portion of line 5 execution time may be due to numpy arrary indexing.
+We can prove this by expanding line 5 in multiple lines, separating the element 
 access from comparison and&nbsp;branching:</p>
 
 </div>
@@ -781,7 +781,7 @@ outside the&nbsp;loop:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Iterators-and-loop-unwrapping">Iterators and loop unwrapping<a class="anchor-link" href="#Iterators-and-loop-unwrapping">&#182;</a></h1><p>The last version move most computations out of the loop, but we are still
+<h1 id="Iterators-and-loop-unwrapping">Iterators and loop unwrapping<a class="anchor-link" href="#Iterators-and-loop-unwrapping">&#182;</a></h1><p>The last version moved most computations out of the loop, but we are still
 accessing a &#8220;big&#8221; numpy array (the boolean array <code>above_min_rate</code>) element by element.
 As seen before, this is relatively slow because because of all the fancy indexing 
 numpy arrays&nbsp;support.</p>
@@ -1157,7 +1157,8 @@ we have done is adding a few variable&nbsp;declarations!</p>
 <a href="http://numba.pydata.org/">Numba</a>. 
 Numba is a <a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">Just-in-Time</a> 
 (<span class="caps">JIT</span>) compiler which analyzes code during execution and translates it 
-to machine code on-fly. Under the hood, Numba uses the <a href="https://en.wikipedia.org/wiki/LLVM"><span class="caps">LLVM</span> compiler</a> 
+to machine code on-fly (recent version also support <a href="http://numba.pydata.org/numba-doc/dev/user/pycc.html">static compilation</a>, <em>a la</em> cython). 
+Under the hood, Numba uses the <a href="https://en.wikipedia.org/wiki/LLVM"><span class="caps">LLVM</span> compiler</a> 
 for the translation to machine&nbsp;code.</p>
 <p>In principle, numba can perform more advanced optimizations than 
 cython and there are reports of 2x speed improvements 
@@ -1281,7 +1282,7 @@ the function (i.e. <code>@numba.jit</code>). Let see Numba at&nbsp;work:</p>
 (I would declare a tie with&nbsp;Cython).</p>
 <p>As a small note, I had to add an additional line (<code>istart = 0</code>)
 to help Numba infer the type of the <code>istart</code> variable. Knowing 
-that <code>istart</code> is an int64, Numba can do more aggressive&nbsp;optimizations.</p>
+that <code>istart</code> is an int64 allows Numba to do more aggressive&nbsp;optimizations.</p>
 <p>There are some corner cases which Numba cannot optimize, 
 but these are becoming fewer at each release. 
 For example in version 0.20, Numba was not able to optimize 
