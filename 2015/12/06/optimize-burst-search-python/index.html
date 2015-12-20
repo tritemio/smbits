@@ -335,7 +335,7 @@ found during the&nbsp;search.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The code is straightforward to read. First note that <code>in_burst</code> is a 
-state variable telling whether we are inside a burst.
+state-variable telling whether we are inside a burst.
 With this in mind, the algorithm unfolds as&nbsp;follows:</p>
 <ol>
 <li>the $i$ variable loops over the timestamps&nbsp;index</li>
@@ -427,9 +427,10 @@ rate) and $T=100\;{\rm\mu s}$ throughout this&nbsp;post.</p>
 This can be &#8220;fast enough&#8221; in some cases. However, 
 when dealing with larger files (longer measurement, multi-spot, etc&#8230;) 
 or when we need to interactively explore the effect of burst search 
-parameters we need a faster burst search. In this post
-we just want to push the limits of what we can achieve in&nbsp;python.</p>
-<p>Next sections show various optimization&nbsp;approaches.</p>
+parameters we need a faster burst&nbsp;search.</p>
+<p>In this post
+we just want to push the limits of what we can achieve in python,
+and in the next sections I&#8217;ll show various optimization&nbsp;approaches.</p>
 
 </div>
 </div>
@@ -583,7 +584,7 @@ of the total execution&nbsp;time.</p>
 <p>A workaround for the slow element access is using a <code>memoryview</code>
 (a <a href="https://docs.python.org/3.5/library/stdtypes.html#memory-views">built-in python object</a>)
 to access the data in the numpy array.
-Since a <code>memoryview</code> and a numpy array can shares data
+Since a <code>memoryview</code> and a numpy array can share data
 we avoid wasting <span class="caps">RAM</span> and waiting for memory copying. 
 To test  performances, we just call
 <code>burst_search()</code> passing a memoryview instead of a numpy&nbsp;array:</p>
@@ -627,7 +628,8 @@ To test  performances, we just call
 rendering the element access time negligible. Note that it is not
 always possible to replace a numpy array with a <code>memoryview</code> because 
 the latter does not support advanced numpy indexing and 
-array&nbsp;operations.</p>
+array operations. In this case we were lucky that we didn&#8217;t need any
+of these&nbsp;features.</p>
 
 </div>
 </div>
@@ -637,9 +639,10 @@ array&nbsp;operations.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Vectorizing-with-numpy">Vectorizing with numpy<a class="anchor-link" href="#Vectorizing-with-numpy">&#182;</a></h1><p>Even though we cannot completely remove the for-loop, we can
-optimize the burst search function using numpy
-vectorization and moving some heavy computation out of the&nbsp;loop.</p>
+<h1 id="Vectorizing-with-numpy">Vectorizing with numpy<a class="anchor-link" href="#Vectorizing-with-numpy">&#182;</a></h1><p>One step further, we can try removing the loop and replacing it 
+with array operations (vectorization). In this case we cannot get rid 
+of the for-loop (at least I cannot find a way to remove it), but we can move 
+some heavy computation out of the&nbsp;loop.</p>
 <p>As shown before, the bottleneck is the operation 
 <code>t[i+m] - t[i] &lt;= T</code>. In particular the array element access 
 at each cycle is quite&nbsp;heavy.</p>
@@ -784,10 +787,12 @@ outside the&nbsp;loop:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Iterators-and-loop-unwrapping">Iterators and loop unwrapping<a class="anchor-link" href="#Iterators-and-loop-unwrapping">&#182;</a></h1><p>The line profiler shows that the simple item access (line 6) takes 30% of the time.
-This is not surprising because numpy has some overhead when accessing a single
-element because of all the fancy indexing it supports. Since here we are simply
-iterating over all the elements we can use the iterator to get the array&nbsp;elements.</p>
+<h1 id="Iterators-and-loop-unwrapping">Iterators and loop unwrapping<a class="anchor-link" href="#Iterators-and-loop-unwrapping">&#182;</a></h1><p>The last version move most computations out of the loop, but we are still
+accessing a &#8220;big&#8221; numpy array (the boolean array <code>above_min_rate</code>) element by element.
+As seen before, this is relatively slow because because of all the fancy indexing 
+numpy arrays&nbsp;support.</p>
+<p>A slightly faster approach is using an iterator to access the numpy array element
+by element in a&nbsp;loop:</p>
 
 </div>
 </div>
@@ -861,7 +866,8 @@ To avoid this test we can slightly unwrap the loop in this&nbsp;way:</p>
 <li>when &#8220;not continuing&#8221;, we are inside a burst and we do a mini internal loop until the burst is&nbsp;over</li>
 <li>the main loop resumes from a position updated by the inner&nbsp;loop</li>
 </ul>
-<p>The trick is using the same iterator in the two nested&nbsp;loops:</p>
+<p>The trick is using the same iterator in the two nested loops, sounds scary
+but it turns out to be quite&nbsp;simple:</p>
 
 </div>
 </div>
@@ -930,7 +936,7 @@ To avoid this test we can slightly unwrap the loop in this&nbsp;way:</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>As a last attempt, we can try using a <code>memoryview</code> instead of a numpy array for
 <code>below_min_rate</code>. With a <code>memoryview</code> the item access is fast so we can
-use a simpler&nbsp;iterator:</p>
+use a simpler iterator (iterate over the&nbsp;index):</p>
 
 </div>
 </div>
@@ -997,12 +1003,12 @@ use a simpler&nbsp;iterator:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Optimizations 3-5 cut another 25-30% to the execution time,
+<p>Optimizations 3-5, cut another 25-30% to the execution time,
 achieving, overall, a 5 times faster execution (compared to the initial python version).
-More than speed, I find this last version (<code>burst_search_numpy5</code>) the easiest to read, 
-mainly because of the elimination of the state variable <code>in_burst</code>
+More than speed, I find the latest version (<code>burst_search_numpy5</code>) the easiest to read, 
+mainly because of the elimination of the state-variable <code>in_burst</code>
 and the use a simpler iterator. A rare case where optimization and
-readability&nbsp;coincide.</p>
+readability don&#8217;t&nbsp;conflict.</p>
 
 </div>
 </div>
@@ -1012,7 +1018,7 @@ readability&nbsp;coincide.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Beyond-pure-python:-Cython-and-Numba">Beyond pure-python: Cython and Numba<a class="anchor-link" href="#Beyond-pure-python:-Cython-and-Numba">&#182;</a></h1><p>For faster execution we need to bypass the <a href="https://en.wikipedia.org/wiki/Interpreted_language">interpreted step</a>
+<h1 id="Beyond-pure-python:-Cython-and-Numba">Beyond pure-python: Cython and Numba<a class="anchor-link" href="#Beyond-pure-python:-Cython-and-Numba">&#182;</a></h1><p>For even faster execution we need to bypass the <a href="https://en.wikipedia.org/wiki/Interpreted_language">interpreted step</a>
 of the python language. In cases like this, in which we perform an &#8220;hot&#8221; loop
 with item access and branching inside the loop, we likely gain
 a significant speed-up if the python code is&nbsp;compiled.</p>
