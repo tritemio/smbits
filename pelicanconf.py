@@ -9,7 +9,7 @@ SITEDESCRIPTION = 'A blog about single-molecules and scientific computing.'
 SITEURL = 'http://tritemio.github.io/smbits'
 TWITTER_USERNAME = 'tritemio_sc'
 DISQUS_SITENAME = 'smbits'
-GOOGLE_ANALYTICS = ''
+GOOGLE_ANALYTICS = 'UA-44142116-4'
 
 PATH = 'content'
 DEFAULT_LANG = u'en'
