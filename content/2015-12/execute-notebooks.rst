@@ -1,9 +1,9 @@
-Batch execution of Jupyter notebooks
+Batch Execution of Jupyter Notebooks
 ====================================
 
 :date: 2015-12-23
 :modified: 2015-12-23
-:tags: jupyter, notebook, batch-processing, nbconvert
+:tags: jupyter, notebook, batch-processing, nbconvert, python
 :category: Scientific Computing
 :slug: execute-notebooks
 :authors: Antonino Ingargiola
@@ -25,47 +25,57 @@ notebooks.
 This functionality is exposed through a python API and a similar
 `command line interface <http://nbconvert.readthedocs.org/en/latest/usage.html>`__.
 
-In this post we will (mostly) see how to use nbconvert python API interface
+In this post we see how to use nbconvert python API interface
 to programmatically execute notebooks.
 
-A Quick example
+A Quick Example
 ---------------
 
 Let's start with a complete quick example, leaving detailed explanations
 to the following sections.
 
-First we import nbconvert and the ``ExecutePreprocessor`` class::
+First we import nbconvert and the ``ExecutePreprocessor`` class:
+
+.. code-block:: python
 
     import nbformat
     from nbconvert.preprocessors import ExecutePreprocessor
 
 Assuming that ``notebook_filename`` is the path of a notebook,
-we can load it with::
+we can load it with:
+
+.. code-block:: python
 
     nb = nbformat.read(open(notebook_filename), as_version=4)
 
-Next, we configure the execution mode::
+Next, we configure the execution mode:
+
+.. code-block:: python
 
     ep = ExecutePreprocessor(timeout = 3600, kernel_name = 'python3')
 
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
 define the execution timeout and the execution kernel to use respectively.
 
-To actually run the notebook we call the method ``preprocess``::
+To actually run the notebook we call the method ``preprocess``:
+
+.. code-block:: python
 
     out = ep.preprocess(nb, {'metadata': {'path': 'notebooks/'}})
 
 Hopefully, we will not get any errors during the notebook execution
 (see the last section for error handling). Note that ``path`` specifies
 in which folder to execute the notebook.
-Finally, to save the resulting notebook::
+Finally, to save the resulting notebook:
+
+.. code-block:: python
 
     nbformat.write(nb, open('executed_notebook.ipynb', mode='wt'))
 
 That's all. Your executed notebook will be saved in the current folder
 in the file *executed_notebook.ipynb*.
 
-Execution arguments
+Execution Arguments
 -------------------
 
 The arguments passed to ``ExecutePreprocessor`` are configuration options
@@ -98,7 +108,7 @@ python 2 and 3. Here ``kernel_name`` traitlet comes to help, allowing
 to specify "python2" and "python3" as kernel, overriding the value saved in the
 notebook.
 
-Error handling
+Error Handling
 --------------
 
 In the previous sections we saw how to save an executed notebook, assuming
@@ -107,13 +117,17 @@ there are no execution error. But, what if there are errors?
 An error during the notebook execution, by default, will stop the execution
 and raise a ``CellExecutionError``. Conveniently, the source cell causing
 the error and the original error name and message are also printed.
-If, after this error, we try to save the notebook as before::
+If, after this error, we try to save the notebook as before:
+
+.. code-block:: python
 
     nbformat.write(nb, open('executed_notebook.ipynb', mode='wt'))
 
 we will obtain a notebook containing the output up until the failing cell,
 including full stack-trace and error which can help debugging.
-A pattern to execute a notebook even in case of errors can be the following::
+A pattern to execute a notebook even in case of errors can be the following:
+
+.. code-block:: python
 
     try:
         out = ep.preprocess(nb, {'metadata': {'path': run_path}})
