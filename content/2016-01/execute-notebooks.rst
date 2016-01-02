@@ -2,7 +2,7 @@ Batch Execution of Jupyter Notebooks
 ====================================
 
 :date: 2016-01-02
-:date: 2016-01-02
+:modified: 2016-01-02
 :tags: jupyter, notebook, batch-processing, nbconvert, python
 :category: Scientific Computing
 :slug: execute-notebooks
@@ -57,8 +57,8 @@ Next, we configure the notebook execution mode:
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
 define respectively the execution timeout and the execution kernel.
 
-    The **kernel_name** keyword requires nbconvert 4.2 (unreleased,
-    use master branch from github).
+    The **kernel_name** keyword `requires <https://github.com/jupyter/nbconvert/pull/177>`__
+    nbconvert 4.2 (unreleased, use master branch from github).
 
 To actually run the notebook we call the method ``preprocess``:
 
