@@ -25,7 +25,7 @@ notebooks.
 This functionality is exposed through a python API and a similar
 `command line interface <http://nbconvert.readthedocs.org/en/latest/usage.html>`__.
 
-In this post we see how to use nbconvert python API interface
+In this post we see how to use nbconvert (4.1+) python API interface
 to programmatically execute notebooks.
 
 A Quick Example
@@ -52,14 +52,13 @@ Next, we configure the execution mode:
 
 .. code-block:: python
 
-    ep = ExecutePreprocessor(timeout = 3600, kernel_name = 'python3')
-
-.. warning::
-    The `kerne_name` keywords requires nbconvert 4.2 (still unreleased,
-    use master branch from github).
+    ep = ExecutePreprocessor(timeout=3600, kernel_name='python3')
 
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
 define the execution timeout and the execution kernel to use respectively.
+
+    The `kerne_name` keywords requires nbconvert 4.2 (unreleased,
+    use master branch from github).
 
 To actually run the notebook we call the method ``preprocess``:
 
@@ -174,9 +173,8 @@ runipy is still actively developed, however, as it is useful for backward
 compatibility and to provide additional features not directly available in
 nbconvert.
 
-.. warning::
     I've not used runipy in a long time, so feel free leave a comment and
-    correct me on the specific advantages of runipy vs nbconvert.
+    correct me on the specific advantages of using runipy vs nbconvert.
 
 Finally, I'm currently playing with the possibility of
 `passing arguments to the notebook to be executed <https://github.com/tritemio/nbrun>`__,
