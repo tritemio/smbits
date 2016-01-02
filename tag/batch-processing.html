@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Single-Molecules Bits - Scientific Computing</title>
+        <title>Single-Molecules Bits - batch-processing</title>
         <link rel="stylesheet" href="http://tritemio.github.io/smbits/theme/css/main.css" />
 
         <!--[if IE]>
@@ -15,7 +15,7 @@
                 <h1><a href="http://tritemio.github.io/smbits/">Single-Molecules Bits  <strong>Of scientific computing and single molecules.</strong></a></h1>
                 <nav><ul>
                     <li><a href="http://tritemio.github.io/smbits/pages/about.html">About</a></li>
-                    <li class="active"><a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a></li>
+                    <li><a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
@@ -167,73 +167,6 @@ but this will be the topic of a next&nbsp;post.</p>
 </div>
 <p>There are <a href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://tritemio.github.io/smbits/2015/12/06/optimize-burst-search-python/" rel="bookmark"
-                           title="Permalink to Optimizing burst search in python">Optimizing burst search in&nbsp;python</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-12-06T00:00:00-08:00">
-                Published: Sun 06 December 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
-        </address>
-<p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
-<p>tags: <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> <a href="http://tritemio.github.io/smbits/tag/optimization.html">optimization</a> <a href="http://tritemio.github.io/smbits/tag/numpy.html">numpy</a> <a href="http://tritemio.github.io/smbits/tag/cython.html">cython</a> <a href="http://tritemio.github.io/smbits/tag/numba.html">numba</a> <a href="http://tritemio.github.io/smbits/tag/burst-search.html">burst-search</a> <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/single-molecule.html">single-molecule</a> <a href="http://tritemio.github.io/smbits/tag/fluorescence.html">fluorescence</a> </p>
-</footer><!-- /.post-info -->                
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<blockquote><p><em>Premature optimization is the root of all&nbsp;evil.</em></p>
-<div align="right"> Donald Knuth </div>
-</blockquote>
-<p>In this post, we&#8217;ll see how to optimize a python implementation of
-the sliding-window burst search algorithm 
-(<a href="http://dx.doi.org/10.1021/jp980965t">Fries 1998</a>). 
-We will start <a href="#Finding-the-bottlenecks">profiling</a> the 
-<a href="#A-pure-python-implementation">unoptimized code</a>, then we&#8217;ll explore 
-different python optimization techniques. 
-Sections of this post&nbsp;are:</p>
-<ol>
-<li><a href="#What-is-the-burst-search-algorithm?">What is the burst search&nbsp;algorithm?</a>
-                <a class="readmore" href="http://tritemio.github.io/smbits/2015/12/06/optimize-burst-search-python/">read more</a>
-<p>There are <a href="http://tritemio.github.io/smbits/2015/12/06/optimize-burst-search-python/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://tritemio.github.io/smbits/2015/08/15/first-post/" rel="bookmark"
-                           title="Permalink to First post">First&nbsp;post</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-08-15T00:00:00-07:00">
-                Published: Sat 15 August 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
-        </address>
-<p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
-<p>tags: <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> <a href="http://tritemio.github.io/smbits/tag/scientific-computing.html">scientific computing</a> <a href="http://tritemio.github.io/smbits/tag/reproducible-computing.html">reproducible computing</a> <a href="http://tritemio.github.io/smbits/tag/blog.html">blog</a> </p>
-</footer><!-- /.post-info -->                <p>Introduction and topics in this&nbsp;blog.</p>
-                <a class="readmore" href="http://tritemio.github.io/smbits/2015/08/15/first-post/">read more</a>
-<p>There are <a href="http://tritemio.github.io/smbits/2015/08/15/first-post/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
