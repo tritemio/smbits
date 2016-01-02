@@ -1,8 +1,8 @@
 Batch Execution of Jupyter Notebooks
 ====================================
 
-:date: 2015-12-23
-:modified: 2015-12-23
+:date: 2016-01-02
+:date: 2016-01-02
 :tags: jupyter, notebook, batch-processing, nbconvert, python
 :category: Scientific Computing
 :slug: execute-notebooks
