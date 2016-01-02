@@ -57,7 +57,7 @@ Next, we configure the execution mode:
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
 define the execution timeout and the execution kernel to use respectively.
 
-    The `kerne_name` keywords requires nbconvert 4.2 (unreleased,
+    The **kernel_name** keyword requires nbconvert 4.2 (unreleased,
     use master branch from github).
 
 To actually run the notebook we call the method ``preprocess``:
@@ -86,30 +86,32 @@ called `traitlets <http://traitlets.readthedocs.org/>`_.
 There are many cool things about traitlets, for example
 they enforce the type of the input and they can be accessed/modified as
 class attributes. Moreover, each traitlet is automatically exposed
-as command-line options. So we can pass the timeout from the command-line
-like this::
+as command-line options. For example, we can pass the timeout from the
+command-line like this::
 
     jupyter nbconvert --ExecutePreprocessor.timeout=3600 --to notebook --execute mynotebook.ipynb
 
 Let's now discuss each traitlet in more detail.
 
-The `timeout`` traitlet defines the maximum time (in seconds) the notebook is
+The ``timeout`` traitlet defines the maximum time (in seconds) the notebook is
 allowed to run, if the execution takes longer an exception will be raised.
 The default is only 30 s, so in many cases you may want to specify
 an higher value.
 
-The second traitlet, ``kernel_name``, allows to specify the name of the kernel
-to be used for the execution. By default, the kernel name is retrieved from the
-notebook metadata. ``kernel_name`` accepts a user-defined kernel name,
-ignoring what is specified in the notebook. A common use case
-is if that of a python 2/3 library which includes documentation/testing
-notebooks. These notebooks will specify either python2 or python3 as kernel
+The second traitlet, ``kernel_name``, allows specifying the name of the kernel
+to be used for the execution. By default, the kernel name is obtained from the
+notebook metadata. The traitlet ``kernel_name`` allows to specify a user-defined
+kernel, overriding the value in the notebook metadata. A common use case
+is that of a python 2/3 library which includes documentation/testing
+notebooks. These notebooks will specify either python2 or python3 kernel
+in their metadata
 (depending on the kernel used the last time the notebook was saved).
-In reality, however, this notebook work on both 2 and 3 python versions.
-For testing purposes, is important to execute these notebook on both
-python 2 and 3. Here ``kernel_name`` traitlet comes to help, allowing
-to specify "python2" and "python3" as kernel, overriding the value saved in the
-notebook.
+In reality, in a python 2/3 codebase, these notebooks will work on both
+python 2 and 3.
+For testing, it is important to be able to execute these notebook on both
+python 2 and 3 automatically. Here the traitlet ``kernel_name`` comes to help:
+we can just run each notebook twice, specifying first "python2" and then
+"python3" as kernel name.
 
 Error Handling
 --------------
