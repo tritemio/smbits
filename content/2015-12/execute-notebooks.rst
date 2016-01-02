@@ -54,6 +54,10 @@ Next, we configure the execution mode:
 
     ep = ExecutePreprocessor(timeout = 3600, kernel_name = 'python3')
 
+.. warning::
+    The `kerne_name` keywords requires nbconvert 4.2 (still unreleased,
+    use master branch from github).
+
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
 define the execution timeout and the execution kernel to use respectively.
 
@@ -166,14 +170,14 @@ Another project worth mentioning is
 `runipy <https://github.com/paulgb/runipy>`__, which a few years ago
 was the only easy way to run notebooks in batches. With the recent features
 gained by nbconvert, simple batch execution cases don't need runipy anymore.
-runipy is still actively developed, however, and provides more advanced features
-like passing parameters to notebooks to be executed (for example,
-single notebook can be tested with several input data).
+runipy is still actively developed, however, as it is useful for backward
+compatibility and to provide additional features not directly available in
+nbconvert.
 
-I've not used runipy in a long time, so feel free leave a comment and
-correct me on the specific advantages of runipy vs nbconvert.
+.. warning::
+    I've not used runipy in a long time, so feel free leave a comment and
+    correct me on the specific advantages of runipy vs nbconvert.
 
-You can find a real-world example of batch-execution of notebooks using
-nbconvert, in `this notebook <https://github.com/Photon-HDF5/phconvert/blob/master/tests/Execute%20notebooks.ipynb>`_
-used for automated testing by the
-`phconvert <http://photon-hdf5.github.io/phconvert/>`_ library.
+Finally, I'm currently playing with the possibility of
+`passing arguments to the notebook to be executed <https://github.com/tritemio/nbrun>`__,
+but this will be the topic of a next post.
