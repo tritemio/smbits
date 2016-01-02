@@ -25,7 +25,7 @@ notebooks.
 This functionality is exposed through a python API and a similar
 `command line interface <http://nbconvert.readthedocs.org/en/latest/usage.html>`__.
 
-In this post we see how to use nbconvert (4.1+) python API interface
+In this post we see how to use nbconvert (4.1+) python API
 to programmatically execute notebooks.
 
 A Quick Example
@@ -48,14 +48,14 @@ we can load it with:
 
     nb = nbformat.read(open(notebook_filename), as_version=4)
 
-Next, we configure the execution mode:
+Next, we configure the notebook execution mode:
 
 .. code-block:: python
 
     ep = ExecutePreprocessor(timeout=3600, kernel_name='python3')
 
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
-define the execution timeout and the execution kernel to use respectively.
+define respectively the execution timeout and the execution kernel.
 
     The **kernel_name** keyword requires nbconvert 4.2 (unreleased,
     use master branch from github).
@@ -64,7 +64,7 @@ To actually run the notebook we call the method ``preprocess``:
 
 .. code-block:: python
 
-    out = ep.preprocess(nb, {'metadata': {'path': 'notebooks/'}})
+    ep.preprocess(nb, {'metadata': {'path': 'notebooks/'}})
 
 Hopefully, we will not get any errors during the notebook execution
 (see the last section for error handling). Note that ``path`` specifies
@@ -91,7 +91,7 @@ command-line like this::
 
     jupyter nbconvert --ExecutePreprocessor.timeout=3600 --to notebook --execute mynotebook.ipynb
 
-Let's now discuss each traitlet in more detail.
+Let's now discuss in more detail the two traitlets we used.
 
 The ``timeout`` traitlet defines the maximum time (in seconds) the notebook is
 allowed to run, if the execution takes longer an exception will be raised.
@@ -122,15 +122,15 @@ there are no execution error. But, what if there are errors?
 An error during the notebook execution, by default, will stop the execution
 and raise a ``CellExecutionError``. Conveniently, the source cell causing
 the error and the original error name and message are also printed.
-If, after this error, we try to save the notebook as before:
+After an error, we can still save the notebook as before:
 
 .. code-block:: python
 
     nbformat.write(nb, open('executed_notebook.ipynb', mode='wt'))
 
-we will obtain a notebook containing the output up until the failing cell,
-including full stack-trace and error which can help debugging.
-A pattern to execute a notebook even in case of errors can be the following:
+The saved notebook contains the output up until the failing cell,
+and includes a full stack-trace and error (which can help debugging).
+A pattern I use to execute notebooks while handling errors is the following:
 
 .. code-block:: python
 
