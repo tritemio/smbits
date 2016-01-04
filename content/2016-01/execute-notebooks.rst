@@ -19,7 +19,7 @@ Intro
 -----
 
 `Jupyter <http://jupyter.org/>`__ notebooks are increasingly used in scientific computing.
-For example, computational projects often include several notebook to carry out
+For example, computational projects often include several notebooks to carry out
 different parts of a bigger analysis. Or, libraries include
 notebooks to provide documentation, examples or tests.
 
