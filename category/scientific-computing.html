@@ -27,8 +27,8 @@
                 Published: Sat 02 January 2016
         </abbr>
 		<br />
-        <abbr class="modified" title="2016-01-02T00:00:00-08:00">
-                Updated: Sat 02 January 2016
+        <abbr class="modified" title="2016-01-04T00:00:00-08:00">
+                Updated: Mon 04 January 2016
         </abbr>
 
         <address class="vcard author">
@@ -36,7 +36,12 @@
         </address>
 <p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
 <p>tags: <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/notebook.html">notebook</a> <a href="http://tritemio.github.io/smbits/tag/batch-processing.html">batch-processing</a> <a href="http://tritemio.github.io/smbits/tag/nbconvert.html">nbconvert</a> <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> </p>
-</footer><!-- /.post-info --><p>Jupyter notebooks are increasingly used in scientific computing.
+</footer><!-- /.post-info --><p>In this post I show how to use nbconvert (4.1+) python <span class="caps">API</span>
+to programmatically execute&nbsp;notebooks.</p>
+<p><strong><span class="caps">EDIT</span></strong>: <em>moved&nbsp;paragraph.</em></p>
+<div class="section" id="intro">
+<h2>Intro</h2>
+<p>Jupyter notebooks are increasingly used in scientific computing.
 For example, computational projects often include several notebook to carry out
 different parts of a bigger analysis. Or, libraries include
 notebooks to provide documentation, examples or&nbsp;tests.</p>
@@ -45,10 +50,10 @@ increasing robustness and&nbsp;reproducibility.</p>
 <p><a class="reference external" href="http://nbconvert.readthedocs.org/">nbconvert</a>, the Jupyter component used
 to convert notebooks, can be used to automatically execute and save one or more
 notebooks.
-This functionality is exposed through a python <span class="caps">API</span> and a similar
+This functionality is exposed through a python <span class="caps">API</span> (explored in this post)
+and a similar
 <a class="reference external" href="http://nbconvert.readthedocs.org/en/latest/usage.html">command line interface</a>.</p>
-<p>In this post we see how to use nbconvert (4.1+) python <span class="caps">API</span>
-to programmatically execute&nbsp;notebooks.</p>
+</div>
 <div class="section" id="a-quick-example">
 <h2>A Quick&nbsp;Example</h2>
 <p>Let&#8217;s start with a complete quick example, leaving detailed explanations
