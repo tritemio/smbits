@@ -2,7 +2,7 @@ Batch Execution of Jupyter Notebooks
 ====================================
 
 :date: 2016-01-02
-:modified: 2016-01-02
+:modified: 2016-01-04
 :tags: jupyter, notebook, batch-processing, nbconvert, python
 :category: Scientific Computing
 :slug: execute-notebooks
@@ -10,6 +10,13 @@ Batch Execution of Jupyter Notebooks
 :summary: Batch execution of jupyter notebooks using nbconvert.
 :status: published
 
+In this post I show how to use nbconvert (4.1+) python API
+to programmatically execute notebooks.
+
+**EDIT**: *moved paragraph.*
+
+Intro
+-----
 
 Jupyter notebooks are increasingly used in scientific computing.
 For example, computational projects often include several notebook to carry out
@@ -22,11 +29,10 @@ increasing robustness and reproducibility.
 `nbconvert <http://nbconvert.readthedocs.org/>`__, the Jupyter component used
 to convert notebooks, can be used to automatically execute and save one or more
 notebooks.
-This functionality is exposed through a python API and a similar
+This functionality is exposed through a python API (explored in this post)
+and a similar
 `command line interface <http://nbconvert.readthedocs.org/en/latest/usage.html>`__.
 
-In this post we see how to use nbconvert (4.1+) python API
-to programmatically execute notebooks.
 
 A Quick Example
 ---------------
