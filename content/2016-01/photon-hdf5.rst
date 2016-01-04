@@ -8,7 +8,7 @@ Announcing Photon-HDF5
 :slug: photon-hdf5
 :authors: Antonino Ingargiola
 :summary: Announcing Photon-HDF5: a file format for single-molecule fluorescence.
-:status: published
+:status: draft
 
 
 A paper introducing the Photon-HDF5 format has just been published on a
@@ -45,6 +45,7 @@ The main Photon-HDF5 features are:
   backward compatible manner.
 - Supports arbitrary user data.
 
+We hope to having set the foundation for future development of the
 
 Resources
 ---------
@@ -53,11 +54,11 @@ The main resources are:
 
 - www.photon-hdf5.org - the Homepage
 - Official documentation: specifications, reading and writing guides and more.
-- Example data files
+- Example Photon-HDF5 data files
 - Examples of reading Photon-HDF5 (in multiple languages)
-- Writing Photon-HDF5 in python (using phconvert) or other languages
-  (using phforge)
-- Online service to convert data files (HT3 or SPC) to Photon-HDF5
+- Writing Photon-HDF5 in python (phconvert) or other languages
+  (phforge)
+- Online service to convert data files (from HT3 or SPC) to Photon-HDF5
   (using Jupyter notebooks and www.mybinder.org).
 
 The online converter, in particular, allows trying the file conversion
