@@ -12,7 +12,7 @@ Introducing Photon-HDF5
 
 
 In this post I introduce `Photon-HDF5 <http://www.photon-hdf5.org>`__,
-a format I co-authored in the past year.
+a format I co-authored during the past year.
 For a more complete overview you can read the recently published paper
 (get the `biorRxiv preprint <http://dx.doi.org/10.1101/026484>`__ or
 the version `just published <http://dx.doi.org/10.1016/j.bpj.2015.11.013>`__ by *Biophysical Journal*).
