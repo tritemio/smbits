@@ -11,46 +11,52 @@ Announcing Photon-HDF5
 :status: draft
 
 
-A paper introducing the Photon-HDF5 format has just been published on a
-selective peer-reviwed journal.
+In this post I informally introduce the `Photon-HDF5 format <www.photon-hdf5.org>`__,
+of which I am one of the original authors.
+For a more complete overview you can read the `Biophysical Journal paper <>`__,
+or the `preprint from BiorXiv <http://dx.doi.org/10.1101/026484>`__.
 
-Photon-HDF5 is a file format to store data from single-molecule fluorescence
-experiments (and simulations) based on photon timestamps and other per-photon
-data. It is a conventional structure to save this kind of "photon-data"
-in HDF5 files, facilitating data sharing and suitable for long-term archival.
+Briefly, Photon-HDF5 is a file format for storing single-molecule
+fluorescence data based on photon timestamps and other per-photon data.
+It is, in essence, a conventional structure to save this class of data
+in HDF5 files, therefore facilitating data sharing and long-term archival.
 
-The format design initiated from the need to store freely-diffusing
-single-molecule FRET data files, but it has evolved to store any measurement
-which records streams of "photon-data" (e.g. timestamp, detector,
+The format was initially designed to store freely-diffusing single-molecule
+FRET data, but it has evolved to store any measurement
+which consist of streams of "photon-data" (e.g. timestamps, detectors,
 TCSPC nanotimes, etc.).
 
+Since Photon-HDF5 is based on HDF5 files, it inherits all its advantages.
+In particular:
 
+- It is open, multi-platform and multi-language,
+- It is efficient: it supports transparent compression and fast reading.
 
-Photon-HDF5 Features
---------------------
+In designing Photon-HDF5, we followed a set of generic principles
+that may be useful also to other scientific formats:
 
-The main Photon-HDF5 features are:
-
-- Open, multi-platform and multi-language: based on HDF5
-- Efficient: it support compression out of the box and it is very fast to read.
-- Self describing: each data field embeds a description string explaining
+- Self describing: each data field embeds a description explaining
   the purpose of the field.
-- Self-contained: contains all the information to analyze the data.
+- Self-contained: contains all the information necessary to analyze the data.
 - Suitable for long-term archival: rich metadata records experimental details,
   author and software version.
-- Supports any number of spectral, polarization or beam-split channels.
-- Supports single- and multi-spot data.
-- Modular design: measurement-type specific data logically separated from
-  the bulk data. Support for new measurement-types can be easily added in
-  backward compatible manner.
 - Supports arbitrary user data.
 
-We hope to having set the foundation for future development of the
+Finally, these features are specific to the particular data
+(single-molecule fluorescence experiments) stored in Photon-HDF5 files:
+
+- Support of any number of spectral, polarization or `beam-split <http://photon-hdf5.readthedocs.org/en/latest/phdata.html#beam-split-ch>`__ channels.
+- Support of single- and multi-spot data.
+- Extensible: the bulk "photon-data" (present in all types of measurements)
+  is logically separated from data specific of a single measurement type.
+  Thanks to this separation, new measurement-types can be defined in
+  backward-compatible manner.
+
 
 Resources
 ---------
 
-The main resources are:
+We resources are:
 
 - www.photon-hdf5.org - the Homepage
 - Official documentation: specifications, reading and writing guides and more.
@@ -62,11 +68,4 @@ The main resources are:
   (using Jupyter notebooks and www.mybinder.org).
 
 The online converter, in particular, allows trying the file conversion
-without any installation.
-As a side note, it was incredibly easy to setup thanks to the mybinder.org
-service provided by @fremanlab which allows to turn any github repository
-of Jupyter notebooks in runnable notebook, no login require.
-
-Coming back to Photon-HDF5, this is only the beginning. We'd like to hear your
-feedback: what works and what it doesn't work for you, suggestion and ideas
-of future development.
+without any installation. So, if you are curious, give it a try!
