@@ -11,10 +11,11 @@ Announcing Photon-HDF5
 :status: draft
 
 
-In this post I (informally) introduce the `Photon-HDF5 format <http://www.photon-hdf5.org>`__,
+In this post I introduce the `Photon-HDF5 format <http://www.photon-hdf5.org>`__,
 of which I am one of the original authors.
-For a more complete overview you can read the *Biophysical Journal paper*,
-or the `preprint from BiorXiv <http://dx.doi.org/10.1101/026484>`__.
+For a more complete overview you can read the recently published paper
+(`preprint <http://dx.doi.org/10.1101/026484>`__ or
+*Biophysical Journal version*, "in press").
 
 Briefly, Photon-HDF5 is a file format for storing single-molecule
 fluorescence data based on photon timestamps and other per-photon data.
