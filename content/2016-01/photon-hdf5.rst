@@ -11,16 +11,20 @@ Announcing Photon-HDF5
 :status: draft
 
 
-In this post I introduce the `Photon-HDF5 format <http://www.photon-hdf5.org>`__,
-of which I am one of the original authors.
+In this post I introduce `Photon-HDF5 <http://www.photon-hdf5.org>`__,
+a format I contributed to develop in the past year.
 For a more complete overview you can read the recently published paper
-(`preprint <http://dx.doi.org/10.1101/026484>`__ or
-*Biophysical Journal version*, "in press").
+(get the `preprint <http://dx.doi.org/10.1101/026484>`__ or
+the version `just published <http://dx.doi.org/10.1016/j.bpj.2015.11.013>`__ by *Biophysical Journal*).
+
+.. image:: https://imgs.xkcd.com/comics/standards.png
+    :alt: xkcd comic: standards
 
 Briefly, Photon-HDF5 is a file format for storing single-molecule
 fluorescence data based on photon timestamps and other per-photon data.
 It is, in essence, a conventional structure to save this class of data
-in `HDF5 <https://www.hdfgroup.org/HDF5/>`__ files, therefore facilitating data sharing and long-term archival.
+in `HDF5 <https://www.hdfgroup.org/HDF5/>`__ files, therefore facilitating
+data sharing and long-term archival.
 
 The format was initially designed to store freely-diffusing single-molecule
 FRET data, but it has evolved to store any measurement
@@ -31,19 +35,18 @@ Design and Features
 -------------------
 
 Since Photon-HDF5 is based on HDF5 files, it inherits all its advantages.
-In particular:
-
-- it is open, multi-platform and multi-language,
-- it is efficient: it supports transparent compression and fast reading.
+In particular it is open standard, multi-platform and multi-language.
+It is also an efficient binary format supporting compression
+transparently.
 
 In designing Photon-HDF5, we followed a set of generic principles
 that may be useful also for other scientific formats:
 
 - **self-describing**: each data field embeds a description explaining
   the purpose of the field;
-- **self-contained**: contains all the information necessary to analyze the data;
+- **self-contained**: it contains all the information necessary to analyze the data;
 - suitable for **long-term archival**: rich metadata records experimental details,
-  author and software version;
+  provenance, author and software version;
 - supports arbitrary **user data**;
 - all support software is **open source** (under MIT license).
 
