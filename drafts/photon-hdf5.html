@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Introducing Photon-HDF5</title>
+        <link rel="stylesheet" href="http://tritemio.github.io/smbits/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://tritemio.github.io/smbits/">Single-Molecules Bits  <strong>Of scientific computing and single molecules.</strong></a></h1>
+                <nav><ul>
+                    <li><a href="http://tritemio.github.io/smbits/pages/about.html">About</a></li>
+                    <li class="active"><a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://tritemio.github.io/smbits/drafts/photon-hdf5.html" rel="bookmark"
+           title="Permalink to Introducing Photon-HDF5">Introducing Photon-<span class="caps">HDF5</span></a></h1>
+<a href="https://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="tritemio_sc">Tweet</a><script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-01-05T00:00:00-08:00">
+                Published: Tue 05 January 2016
+        </abbr>
+		<br />
+        <abbr class="modified" title="2016-01-05T00:00:00-08:00">
+                Updated: Tue 05 January 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
+        </address>
+<p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
+<p>tags: <a href="http://tritemio.github.io/smbits/tag/photon-hdf5.html">photon-hdf5</a> <a href="http://tritemio.github.io/smbits/tag/hdf5.html">HDF5</a> <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/single-molecule.html">single-molecule</a> <a href="http://tritemio.github.io/smbits/tag/data-format.html">data format</a> </p>
+</footer><!-- /.post-info -->      <p>In this post I introduce <a class="reference external" href="http://www.photon-hdf5.org">Photon-<span class="caps">HDF5</span></a>,
+a format I contributed to develop in the past year.
+For a more complete overview you can read the recently published paper
+(get the <a class="reference external" href="http://dx.doi.org/10.1101/026484">biorRxiv preprint</a> or
+the version <a class="reference external" href="http://dx.doi.org/10.1016/j.bpj.2015.11.013">just published</a> by <em>Biophysical Journal</em>).</p>
+<p>Briefly, Photon-<span class="caps">HDF5</span> is a file format for storing single-molecule
+fluorescence data based on photon timestamps and other per-photon data.
+It is, in essence, a conventional structure to save this class of data
+in <a class="reference external" href="https://www.hdfgroup.org/HDF5/"><span class="caps">HDF5</span></a> files, therefore facilitating
+data sharing and long-term&nbsp;archival.</p>
+<p>The format was initially designed to store freely-diffusing single-molecule
+<span class="caps">FRET</span> data, but it has evolved to store any measurement
+which consists of streams of &#8220;photon-data&#8221; (e.g. timestamps, detectors,
+<span class="caps">TCSPC</span> nanotimes,&nbsp;etc.).</p>
+<img alt="xkcd comic: standards" class="align-center" src="https://imgs.xkcd.com/comics/standards.png" />
+<div class="section" id="design-and-features">
+<h2>Design and&nbsp;Features</h2>
+<p>Since Photon-<span class="caps">HDF5</span> is based on <span class="caps">HDF5</span> files, it inherits all its advantages.
+In particular it is open standard, multi-platform and multi-language.
+It is also an efficient binary format supporting compression&nbsp;transparently.</p>
+<p>In designing Photon-<span class="caps">HDF5</span>, we followed a set of generic principles
+that may be useful also for other scientific&nbsp;formats:</p>
+<ul class="simple">
+<li><strong>self-describing</strong>: each data field embeds a description explaining
+the purpose of the&nbsp;field;</li>
+<li><strong>self-contained</strong>: it contains all the information necessary to analyze the&nbsp;data;</li>
+<li>suitable for <strong>long-term archival</strong>: rich metadata records experimental details,
+provenance, author and software&nbsp;version;</li>
+<li>supports arbitrary <strong>user data</strong>;</li>
+<li>all support software is <strong>open source</strong> (under <span class="caps">MIT</span>&nbsp;license).</li>
+</ul>
+<p>Finally, the following features make Photon-<span class="caps">HDF5</span> suitable for a wide range
+of single-molecule fluorescence&nbsp;data:</p>
+<ul class="simple">
+<li>supports any number of spectral, polarization or <a class="reference external" href="http://photon-hdf5.readthedocs.org/en/latest/phdata.html#beam-split-ch">beam-split</a>&nbsp;channels.</li>
+<li>supports single- and multi-spot&nbsp;data.</li>
+<li>extensible: the bulk &#8220;photon-data&#8221; (present in all types of measurements)
+is logically separated from data specific of a single measurement&nbsp;type.</li>
+</ul>
+<p>Thanks to this extensible structure, new measurement-types can be defined
+in backward-compatible manner. In fact, we encourage users to propose
+new measurement types (use the
+<a class="reference external" href="https://groups.google.com/forum/#!forum/photon-hdf5">Photon-<span class="caps">HDF5</span> mailing list</a>).</p>
+</div>
+<div class="section" id="open-development">
+<h2>Open&nbsp;Development</h2>
+<p>All Photon-<span class="caps">HDF5</span> development (both specification documents and software)
+takes place publicly <a class="reference external" href="https://github.com/Photon-HDF5">on GitHub</a>.
+We encourage users to join the effort, providing feedback and/or submitting Issues or
+<a class="reference external" href="https://help.github.com/articles/creating-a-pull-request/">Pull Requests</a>.
+By providing feedback and ideas, you can shape the future development
+of Photon-<span class="caps">HDF5</span>. Plus we acknowledge all <a class="reference external" href="http://photon-hdf5.readthedocs.org/en/latest/contributing.html#contributions-acknowledgement">contributions</a>.</p>
+</div>
+<div class="section" id="supporting-software">
+<h2>Supporting&nbsp;Software</h2>
+<p>Photon-<span class="caps">HDF5</span> files can be opened in <a class="reference external" href="https://www.hdfgroup.org/products/java/hdfview/">HDFView</a>
+and read exactly in the same way you read other <span class="caps">HDF5</span> files. To help newcomers,
+we posted
+<a class="reference external" href="http://photon-hdf5.github.io/photon_hdf5_reading_examples/">reading examples</a>
+in Python, <span class="caps">MATLAB</span> and&nbsp;LabVIEW.</p>
+<p>To write valid Photon-<span class="caps">HDF5</span> files from scratch, we provide
+a small open source python library called <a class="reference external" href="http://photon-hdf5.github.io/phconvert/">phconvert</a>.
+Phconvert
+includes, additionally, <a class="reference external" href="http://jupyter.org">Jupyter</a> notebooks to convert common file formats to Photon-<span class="caps">HDF5</span>.
+For all the other languages, the easiest and most robust way of writing
+Photon-<span class="caps">HD5</span> files is using an ad-hoc script called <a class="reference external" href="http://photon-hdf5.github.io/phforge/">phforge</a>.</p>
+</div>
+<div class="section" id="try-it-online">
+<h2>Try it&nbsp;Online!</h2>
+<p>To get a the taste of it, you can use the
+<a class="reference external" href="http://photon-hdf5.github.io/Photon-HDF5-Converter/">online conversion service</a>
+to convert an existing data file (Becker Hickl <span class="caps">SPC</span> or PicoQuant <span class="caps">HT3</span>)
+to Photon-<span class="caps">HDF5</span>. This service uses <a class="reference external" href="http://mybinder.org/">MyBinder.org</a> to provide access to
+the Jupyter Notebooks implementing the file&nbsp;conversion.</p>
+<p>Enjoy!</p>
+</div>
+
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://www.biophysics.org/">Biophysical Society</a></li>
+                            <li><a href="http://planet.scipy.org/">Planet Scipy</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/tritemio_sc">Twitter</a></li>
+                            <li><a href="http://github.com/tritemio">GitHub</a></li>
+                            <li><a href="https://www.researchgate.net/profile/Antonino_Ingargiola">ResearchGate</a></li>
+                            <li><a href="https://ucla.academia.edu/AntoninoIngargiola">Academia.edu</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44142116-4']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'smbits';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
