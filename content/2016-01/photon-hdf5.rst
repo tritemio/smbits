@@ -33,38 +33,39 @@ In particular:
 - it is efficient: it supports transparent compression and fast reading.
 
 In designing Photon-HDF5, we followed a set of generic principles
-that may be useful also to other scientific formats:
+that may be useful also for other scientific formats:
 
 - **self-describing**: each data field embeds a description explaining
   the purpose of the field;
 - **self-contained**: contains all the information necessary to analyze the data;
 - suitable for **long-term archival**: rich metadata records experimental details,
-  author and software version:
-- supports arbitrary **user data**.
-- all support software is **open source** (under MIT license)
+  author and software version;
+- supports arbitrary **user data**;
+- all support software is **open source** (under MIT license).
 
 Finally, the following features make Photon-HDF5 suitable for a wide range
-of single-molecule fluorescence data:
+of single-molecule fluorescence data.
 
-- supports any number of spectral, polarization or `beam-split <http://photon-hdf5.readthedocs.org/en/latest/phdata.html#beam-split-ch>`__ channels.
-- supports single- and multi-spot data.
-- extensible: the bulk "photon-data" (present in all types of measurements)
+- Supports any number of spectral, polarization or `beam-split <http://photon-hdf5.readthedocs.org/en/latest/phdata.html#beam-split-ch>`__ channels.
+- Supports single- and multi-spot data.
+- Extensible: the bulk "photon-data" (present in all types of measurements)
   is logically separated from data specific of a single measurement type.
 
 Thanks to this extensible structure, new measurement-types can be defined
-in backward-compatible manner. We encourage users to propose
-new measurement types through the
-`Photon-HDF5 mailing list <https://groups.google.com/forum/#!forum/photon-hdf5>`__.
+in backward-compatible manner. In fact, we encourage users to propose
+new measurement types (using the
+`Photon-HDF5 mailing list <https://groups.google.com/forum/#!forum/photon-hdf5>`__).
 
 Supporting Software
 -------------------
 
-Photon-HDF5 can be opened in `HDFView <https://www.hdfgroup.org/products/java/hdfview/>`__
-and read exactly in the same way you read other HDF5 files. We provides
+Photon-HDF5 files can be opened in `HDFView <https://www.hdfgroup.org/products/java/hdfview/>`__
+and read exactly in the same way you read other HDF5 files. To help newcomers,
+we posted
 `reading examples <http://photon-hdf5.github.io/photon_hdf5_reading_examples/>`__
 in Python, MATLAB and LabVIEW.
 
-To write valid Photon-HDF5 files from scratch we provide
+To write valid Photon-HDF5 files from scratch, we provide
 a small open source python library called `phconvert <http://photon-hdf5.github.io/phconvert/>`__.
 Phconvert
 includes, additionally, `Jupyter <http://jupyter.org>`__ notebooks to convert common file formats to Photon-HDF5.
@@ -74,7 +75,7 @@ Photon-HD5 files is using an ad-hoc script called `phforge <http://photon-hdf5.g
 Try it Online!
 --------------
 
-To get the taste of it, you can use the
+To get a the taste of it, you can use the
 `online conversion service <http://photon-hdf5.github.io/Photon-HDF5-Converter/>`__
 to convert an existing data file (Becker Hickl SPC or PicoQuant HT3)
 to Photon-HDF5. This service uses MyBinder.org to provide access to
