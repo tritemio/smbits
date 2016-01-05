@@ -48,16 +48,16 @@ that may be useful also for other scientific formats:
 - all support software is **open source** (under MIT license).
 
 Finally, the following features make Photon-HDF5 suitable for a wide range
-of single-molecule fluorescence data.
+of single-molecule fluorescence data:
 
-- Supports any number of spectral, polarization or `beam-split <http://photon-hdf5.readthedocs.org/en/latest/phdata.html#beam-split-ch>`__ channels.
-- Supports single- and multi-spot data.
-- Extensible: the bulk "photon-data" (present in all types of measurements)
+- supports any number of spectral, polarization or `beam-split <http://photon-hdf5.readthedocs.org/en/latest/phdata.html#beam-split-ch>`__ channels.
+- supports single- and multi-spot data.
+- extensible: the bulk "photon-data" (present in all types of measurements)
   is logically separated from data specific of a single measurement type.
 
 Thanks to this extensible structure, new measurement-types can be defined
 in backward-compatible manner. In fact, we encourage users to propose
-new measurement types (using the
+new measurement types (use the
 `Photon-HDF5 mailing list <https://groups.google.com/forum/#!forum/photon-hdf5>`__).
 
 Open Development
@@ -67,7 +67,7 @@ All Photon-HDF5 development (both specification documents and software)
 takes place publicly `on GitHub <https://github.com/Photon-HDF5>`__.
 We encourage users to join the effort, providing feedback and/or submitting Issues or
 `Pull Requests <https://help.github.com/articles/creating-a-pull-request/>`__.
-By providing feedback and ideas, you can share the future development
+By providing feedback and ideas, you can shape the future development
 of Photon-HDF5. Plus we acknowledge all `contributions <http://photon-hdf5.readthedocs.org/en/latest/contributing.html#contributions-acknowledgement>`__.
 
 
