@@ -26,6 +26,9 @@ FRET data, but it has evolved to store any measurement
 which consists of streams of "photon-data" (e.g. timestamps, detectors,
 TCSPC nanotimes, etc.).
 
+Design and Features
+-------------------
+
 Since Photon-HDF5 is based on HDF5 files, it inherits all its advantages.
 In particular:
 
@@ -55,6 +58,18 @@ Thanks to this extensible structure, new measurement-types can be defined
 in backward-compatible manner. In fact, we encourage users to propose
 new measurement types (using the
 `Photon-HDF5 mailing list <https://groups.google.com/forum/#!forum/photon-hdf5>`__).
+
+Open Development
+----------------
+
+All Photon-HDF5 development (both specification documents and software)
+takes place publically `on GitHub <https://github.com/Photon-HDF5>`__.
+
+We encourage users to join the effort, providing feedback and/or submiting Issues or
+`Pull Requests <https://help.github.com/articles/creating-a-pull-request/>`__.
+By providing feedback and ideas, you can share the future development
+of Photon-HDF5. Plus we acknowledge all `contributions <http://photon-hdf5.readthedocs.org/en/latest/contributing.html#contributions-acknowledgement>`__.
+
 
 Supporting Software
 -------------------
