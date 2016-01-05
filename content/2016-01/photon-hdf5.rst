@@ -78,7 +78,7 @@ Try it Online!
 To get a the taste of it, you can use the
 `online conversion service <http://photon-hdf5.github.io/Photon-HDF5-Converter/>`__
 to convert an existing data file (Becker Hickl SPC or PicoQuant HT3)
-to Photon-HDF5. This service uses MyBinder.org to provide access to
+to Photon-HDF5. This service uses `MyBinder.org <http://mybinder.org/>`__ to provide access to
 the Jupyter Notebooks implementing the file conversion.
 
 Enjoy!
