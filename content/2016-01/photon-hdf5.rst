@@ -20,7 +20,7 @@ For a more complete overview you can read the recently published paper
 Briefly, Photon-HDF5 is a file format for storing single-molecule
 fluorescence data based on photon timestamps and other per-photon data.
 It is, in essence, a conventional structure to save this class of data
-in HDF5 files, therefore facilitating data sharing and long-term archival.
+in `HDF5 <https://www.hdfgroup.org/HDF5/>`__ files, therefore facilitating data sharing and long-term archival.
 
 The format was initially designed to store freely-diffusing single-molecule
 FRET data, but it has evolved to store any measurement
