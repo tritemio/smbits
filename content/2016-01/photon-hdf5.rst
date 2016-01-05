@@ -1,5 +1,5 @@
-Announcing Photon-HDF5
-======================
+Introducing Photon-HDF5
+=======================
 
 :date: 2016-01-02
 :modified: 2016-01-02
@@ -14,11 +14,8 @@ Announcing Photon-HDF5
 In this post I introduce `Photon-HDF5 <http://www.photon-hdf5.org>`__,
 a format I contributed to develop in the past year.
 For a more complete overview you can read the recently published paper
-(get the `preprint <http://dx.doi.org/10.1101/026484>`__ or
+(get the `biorRxiv preprint <http://dx.doi.org/10.1101/026484>`__ or
 the version `just published <http://dx.doi.org/10.1016/j.bpj.2015.11.013>`__ by *Biophysical Journal*).
-
-.. image:: https://imgs.xkcd.com/comics/standards.png
-    :alt: xkcd comic: standards
 
 Briefly, Photon-HDF5 is a file format for storing single-molecule
 fluorescence data based on photon timestamps and other per-photon data.
@@ -30,6 +27,11 @@ The format was initially designed to store freely-diffusing single-molecule
 FRET data, but it has evolved to store any measurement
 which consists of streams of "photon-data" (e.g. timestamps, detectors,
 TCSPC nanotimes, etc.).
+
+.. image:: https://imgs.xkcd.com/comics/standards.png
+    :alt: xkcd comic: standards
+    :align: center
+
 
 Design and Features
 -------------------
