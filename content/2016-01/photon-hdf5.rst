@@ -63,9 +63,8 @@ Open Development
 ----------------
 
 All Photon-HDF5 development (both specification documents and software)
-takes place publically `on GitHub <https://github.com/Photon-HDF5>`__.
-
-We encourage users to join the effort, providing feedback and/or submiting Issues or
+takes place publicly `on GitHub <https://github.com/Photon-HDF5>`__.
+We encourage users to join the effort, providing feedback and/or submitting Issues or
 `Pull Requests <https://help.github.com/articles/creating-a-pull-request/>`__.
 By providing feedback and ideas, you can share the future development
 of Photon-HDF5. Plus we acknowledge all `contributions <http://photon-hdf5.readthedocs.org/en/latest/contributing.html#contributions-acknowledgement>`__.
