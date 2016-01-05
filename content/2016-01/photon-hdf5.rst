@@ -32,6 +32,7 @@ TCSPC nanotimes, etc.).
     :alt: xkcd comic: standards
     :align: center
 
+*from https://xkcd.com/927/*
 
 Design and Features
 -------------------
