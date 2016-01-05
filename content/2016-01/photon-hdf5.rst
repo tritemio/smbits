@@ -8,7 +8,7 @@ Introducing Photon-HDF5
 :slug: photon-hdf5
 :authors: Antonino Ingargiola
 :summary: Announcing Photon-HDF5: a file format for single-molecule fluorescence.
-:status: draft
+:status: published
 
 
 In this post I introduce `Photon-HDF5 <http://www.photon-hdf5.org>`__,
