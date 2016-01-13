@@ -10,7 +10,7 @@ Batch Execution of Jupyter Notebooks
 :summary: Batch execution of jupyter notebooks using nbconvert.
 :status: published
 
-In this post I show how to use `nbconvert <http://nbconvert.readthedocs.org/>`__ (4.1+) python API
+In this post I show how to use `nbconvert <http://nbconvert.readthedocs.org/>`__ (4.1+) Python API
 to programmatically execute notebooks.
 
 **EDIT**: *moved paragraph.*
@@ -29,7 +29,7 @@ increasing robustness and reproducibility.
 `nbconvert <http://nbconvert.readthedocs.org/>`__, the Jupyter component used
 to convert notebooks, can be used to automatically execute and save one or more
 notebooks.
-This functionality is exposed through a python API (explored in this post)
+This functionality is exposed through a Python API (explored in this post)
 and a similar
 `command line interface <http://nbconvert.readthedocs.org/en/latest/usage.html>`__.
 
@@ -58,13 +58,15 @@ Next, we configure the notebook execution mode:
 
 .. code-block:: python
 
-    ep = ExecutePreprocessor(timeout=3600, kernel_name='python3')
+    ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
 
 We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
-define respectively the execution timeout and the execution kernel.
+define respectively the cell execution timeout and the execution kernel.
 
-    The **kernel_name** keyword `requires <https://github.com/jupyter/nbconvert/pull/177>`__
-    nbconvert 4.2 (unreleased, use master branch from github).
+    The option to specify **kernel_name** is `new <https://github.com/jupyter/nbconvert/pull/177>`__
+    in nbconvert 4.2+ (4.2 is still unreleased).
+    When not specified or when using nbconvert <4.2,
+    the default Python kernel is chosen.
 
 To actually run the notebook we call the method ``preprocess``:
 
@@ -75,7 +77,7 @@ To actually run the notebook we call the method ``preprocess``:
 Hopefully, we will not get any errors during the notebook execution
 (see the last section for error handling). Note that ``path`` specifies
 in which folder to execute the notebook.
-Finally, to save the resulting notebook:
+Finally, save the resulting notebook with:
 
 .. code-block:: python
 
@@ -95,35 +97,36 @@ class attributes. Moreover, each traitlet is automatically exposed
 as command-line options. For example, we can pass the timeout from the
 command-line like this::
 
-    jupyter nbconvert --ExecutePreprocessor.timeout=3600 --to notebook --execute mynotebook.ipynb
+    jupyter nbconvert --ExecutePreprocessor.timeout=600 --to notebook --execute mynotebook.ipynb
 
 Let's now discuss in more detail the two traitlets we used.
 
-The ``timeout`` traitlet defines the maximum time (in seconds) the notebook is
+The ``timeout`` traitlet defines the maximum time (in seconds) each notebook
+cell is
 allowed to run, if the execution takes longer an exception will be raised.
-The default is only 30 s, so in many cases you may want to specify
+The default is 30 s, so in cases of long-running cells you may want to specify
 an higher value.
 
 The second traitlet, ``kernel_name``, allows specifying the name of the kernel
 to be used for the execution. By default, the kernel name is obtained from the
 notebook metadata. The traitlet ``kernel_name`` allows to specify a user-defined
 kernel, overriding the value in the notebook metadata. A common use case
-is that of a python 2/3 library which includes documentation/testing
-notebooks. These notebooks will specify either python2 or python3 kernel
+is that of a Python 2/3 library which includes documentation/testing
+notebooks. These notebooks will specify either a python2 or python3 kernel
 in their metadata
 (depending on the kernel used the last time the notebook was saved).
-In reality, in a python 2/3 codebase, these notebooks will work on both
-python 2 and 3.
-For testing, it is important to be able to execute these notebook on both
-python 2 and 3 automatically. Here the traitlet ``kernel_name`` comes to help:
+In reality, these notebooks will work on both Python 2/3 and, for testing,
+it is important to be able to execute them programmatically on both
+versions. Here the traitlet ``kernel_name`` is helpful:
 we can just run each notebook twice, specifying first "python2" and then
 "python3" as kernel name.
+
 
 Error Handling
 --------------
 
 In the previous sections we saw how to save an executed notebook, assuming
-there are no execution error. But, what if there are errors?
+there are no execution errors. But, what if there are errors?
 
 An error during the notebook execution, by default, will stop the execution
 and raise a ``CellExecutionError``. Conveniently, the source cell causing
@@ -152,21 +155,22 @@ A pattern I use to execute notebooks while handling errors is the following:
 
 This will save the executed notebook regardless of execution errors.
 In case of errors, however, an additional message is printed and the
-``CellExecutionError`` is raised. The messages directs the user to
+``CellExecutionError`` is raised. The message directs the user to
 the saved notebook for further inspection.
 
-As a last scenario, sometimes notebooks contains independent computations
-in each code cell.
-In this case it can be useful to run the notebook until the end,
-in order to get a complete picture of all cells that are failing.
-Luckily enough, the ``allow_errors`` traitlet (default False) allows to do that.
+As a last scenario, it is sometimes useful to execute notebooks which
+raise exceptions, for example to show an error condition.
+In this case, instead of stopping the execution on the first error,
+we can keep executing the notebook using the traitlet ``allow_errors``
+(default False).
 With ``allow_errors=True``,
-the notebook is executed until the end, and a ``CellExecutionError`` is raised
-if one or more cells threw an error. In this case, the output notebook
-will contain the stack-traces and error messages for all the failing cells.
+the notebook is executed until the end, regardless of any error encountered
+during the execution. The output notebook,
+will contain the stack-traces and error messages for **all** the cells
+raising exceptions.
 
-Conclusion
-----------
+Conclusions
+-----------
 
 Automating notebook execution can save time, facilitate testing and increase
 robustness of computational pipelines base on notebooks.
@@ -175,15 +179,9 @@ the benefits of being a standard Jupyter component.
 
 Another project worth mentioning is
 `runipy <https://github.com/paulgb/runipy>`__, which a few years ago
-was the only easy way to run notebooks in batches. With the recent features
-gained by nbconvert, simple batch execution cases don't need runipy anymore.
-runipy is still actively developed, however, as it is useful for backward
-compatibility and to provide additional features not directly available in
-nbconvert.
+was the only easy way to run notebooks in batches.
 
-    I've not used runipy in a long time, so feel free leave a comment and
-    correct me on the specific advantages of using runipy vs nbconvert.
-
-Finally, I'm currently playing with the possibility of
-`passing arguments to the notebook to be executed <https://github.com/tritemio/nbrun>`__,
-but this will be the topic of a next post.
+A natural extension to executing notebooks programmatically is passing
+arguments, for example to select data files or analysis parameters.
+You can find an experimental implementation of parameter passing in
+`nbrun <https://github.com/tritemio/nbrun>`__.
