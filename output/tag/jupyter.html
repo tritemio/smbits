@@ -27,8 +27,8 @@
                 Published: Sat 02 January 2016
         </abbr>
 		<br />
-        <abbr class="modified" title="2016-01-04T00:00:00-08:00">
-                Updated: Mon 04 January 2016
+        <abbr class="modified" title="2016-01-23T00:00:00-08:00">
+                Updated: Sat 23 January 2016
         </abbr>
 
         <address class="vcard author">
@@ -36,9 +36,18 @@
         </address>
 <p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
 <p>tags: <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/notebook.html">notebook</a> <a href="http://tritemio.github.io/smbits/tag/batch-processing.html">batch-processing</a> <a href="http://tritemio.github.io/smbits/tag/nbconvert.html">nbconvert</a> <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> </p>
-</footer><!-- /.post-info --><p>In this post I show how to use <a class="reference external" href="http://nbconvert.readthedocs.org/">nbconvert</a> (4.1+) python <span class="caps">API</span>
+</footer><!-- /.post-info --><p>In this post I show how to use <a class="reference external" href="http://nbconvert.readthedocs.org/">nbconvert</a>&#8216;s (4.1+) Python <span class="caps">API</span>
 to programmatically execute&nbsp;notebooks.</p>
-<p><strong><span class="caps">EDIT</span></strong>: <em>moved&nbsp;paragraph.</em></p>
+<ul>
+<li><p class="first"><strong><span class="caps">EDIT</span> 2016-01-05</strong>: <em>moved&nbsp;paragraph.</em></p>
+</li>
+<li><p class="first"><strong><span class="caps">EDIT</span> 2016-01-15</strong>: <em>apply corrections from Jupyter&nbsp;team</em></p>
+<blockquote>
+<p>With the help of the Jupyter team, most of this post is now part of
+the official <a class="reference external" href="http://nbconvert.readthedocs.org/en/latest/execute_api.html">nbconvert docs</a>!</p>
+</blockquote>
+</li>
+</ul>
 <div class="section" id="intro">
 <h2>Intro</h2>
 <p><a class="reference external" href="http://jupyter.org/">Jupyter</a> notebooks are increasingly used in scientific computing.
@@ -50,7 +59,7 @@ increasing robustness and&nbsp;reproducibility.</p>
 <p><a class="reference external" href="http://nbconvert.readthedocs.org/">nbconvert</a>, the Jupyter component used
 to convert notebooks, can be used to automatically execute and save one or more
 notebooks.
-This functionality is exposed through a python <span class="caps">API</span> (explored in this post)
+This functionality is exposed through a Python <span class="caps">API</span> (explored in this post)
 and a similar
 <a class="reference external" href="http://nbconvert.readthedocs.org/en/latest/usage.html">command line interface</a>.</p>
 </div>
@@ -67,20 +76,22 @@ we can load it&nbsp;with:</p>
 <div class="highlight"><pre><span class="n">nb</span> <span class="o">=</span> <span class="n">nbformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">notebook_filename</span><span class="p">),</span> <span class="n">as_version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 <p>Next, we configure the notebook execution&nbsp;mode:</p>
-<div class="highlight"><pre><span class="n">ep</span> <span class="o">=</span> <span class="n">ExecutePreprocessor</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span> <span class="n">kernel_name</span><span class="o">=</span><span class="s">&#39;python3&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="n">ep</span> <span class="o">=</span> <span class="n">ExecutePreprocessor</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">kernel_name</span><span class="o">=</span><span class="s">&#39;python3&#39;</span><span class="p">)</span>
 </pre></div>
 <p>We specified two (optional) arguments <tt class="docutils literal">timeout</tt> and <tt class="docutils literal">kernel_name</tt>, which
-define respectively the execution timeout and the execution&nbsp;kernel.</p>
+define respectively the cell execution timeout and the execution&nbsp;kernel.</p>
 <blockquote>
-The <strong>kernel_name</strong> keyword <a class="reference external" href="https://github.com/jupyter/nbconvert/pull/177">requires</a>
-nbconvert 4.2 (unreleased, use master branch from github).</blockquote>
+The option to specify <strong>kernel_name</strong> is <a class="reference external" href="https://github.com/jupyter/nbconvert/pull/177">new</a>
+in nbconvert 4.2+ (4.2 is at the moment still unreleased).
+When not specified or when using nbconvert &lt;4.2,
+the default Python kernel is chosen.</blockquote>
 <p>To actually run the notebook we call the method <tt class="docutils literal">preprocess</tt>:</p>
 <div class="highlight"><pre><span class="n">ep</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;path&#39;</span><span class="p">:</span> <span class="s">&#39;notebooks/&#39;</span><span class="p">}})</span>
 </pre></div>
 <p>Hopefully, we will not get any errors during the notebook execution
 (see the last section for error handling). Note that <tt class="docutils literal">path</tt> specifies
 in which folder to execute the notebook.
-Finally, to save the resulting&nbsp;notebook:</p>
+Finally, save the resulting notebook&nbsp;with:</p>
 <div class="highlight"><pre><span class="n">nbformat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;executed_notebook.ipynb&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;wt&#39;</span><span class="p">))</span>
 </pre></div>
 <p>That&#8217;s all. Your executed notebook will be saved in the current folder
@@ -96,32 +107,32 @@ class attributes. Moreover, each traitlet is automatically exposed
 as command-line options. For example, we can pass the timeout from the
 command-line like&nbsp;this:</p>
 <pre class="literal-block">
-jupyter nbconvert --ExecutePreprocessor.timeout=3600 --to notebook --execute mynotebook.ipynb
+jupyter nbconvert --ExecutePreprocessor.timeout=600 --to notebook --execute mynotebook.ipynb
 </pre>
 <p>Let&#8217;s now discuss in more detail the two traitlets we&nbsp;used.</p>
-<p>The <tt class="docutils literal">timeout</tt> traitlet defines the maximum time (in seconds) the notebook is
+<p>The <tt class="docutils literal">timeout</tt> traitlet defines the maximum time (in seconds) each notebook
+cell is
 allowed to run, if the execution takes longer an exception will be raised.
-The default is only 30 s, so in many cases you may want to specify
+The default is 30 s, so in cases of long-running cells you may want to specify
 an higher&nbsp;value.</p>
 <p>The second traitlet, <tt class="docutils literal">kernel_name</tt>, allows specifying the name of the kernel
 to be used for the execution. By default, the kernel name is obtained from the
 notebook metadata. The traitlet <tt class="docutils literal">kernel_name</tt> allows to specify a user-defined
 kernel, overriding the value in the notebook metadata. A common use case
-is that of a python 2/3 library which includes documentation/testing
-notebooks. These notebooks will specify either python2 or python3 kernel
+is that of a Python 2/3 library which includes documentation/testing
+notebooks. These notebooks will specify either a python2 or python3 kernel
 in their metadata
 (depending on the kernel used the last time the notebook was saved).
-In reality, in a python 2/3 codebase, these notebooks will work on both
-python 2 and 3.
-For testing, it is important to be able to execute these notebook on both
-python 2 and 3 automatically. Here the traitlet <tt class="docutils literal">kernel_name</tt> comes to help:
+In reality, these notebooks will work on both Python 2/3 and, for testing,
+it is important to be able to execute them programmatically on both
+versions. Here the traitlet <tt class="docutils literal">kernel_name</tt> is helpful:
 we can just run each notebook twice, specifying first &#8220;python2&#8221; and then
 &#8220;python3&#8221; as kernel&nbsp;name.</p>
 </div>
 <div class="section" id="error-handling">
 <h2>Error&nbsp;Handling</h2>
 <p>In the previous sections we saw how to save an executed notebook, assuming
-there are no execution error. But, what if there are&nbsp;errors?</p>
+there are no execution errors. But, what if there are&nbsp;errors?</p>
 <p>An error during the notebook execution, by default, will stop the execution
 and raise a <tt class="docutils literal">CellExecutionError</tt>. Conveniently, the source cell causing
 the error and the original error name and message are also printed.
@@ -143,36 +154,32 @@ A pattern I use to execute notebooks while handling errors is the&nbsp;following
 </pre></div>
 <p>This will save the executed notebook regardless of execution errors.
 In case of errors, however, an additional message is printed and the
-<tt class="docutils literal">CellExecutionError</tt> is raised. The messages directs the user to
+<tt class="docutils literal">CellExecutionError</tt> is raised. The message directs the user to
 the saved notebook for further&nbsp;inspection.</p>
-<p>As a last scenario, sometimes notebooks contains independent computations
-in each code cell.
-In this case it can be useful to run the notebook until the end,
-in order to get a complete picture of all cells that are failing.
-Luckily enough, the <tt class="docutils literal">allow_errors</tt> traitlet (default False) allows to do that.
+<p>As a last scenario, it is sometimes useful to execute notebooks which
+raise exceptions, for example to show an error condition.
+In this case, instead of stopping the execution on the first error,
+we can keep executing the notebook using the traitlet <tt class="docutils literal">allow_errors</tt>
+(default False).
 With <tt class="docutils literal">allow_errors=True</tt>,
-the notebook is executed until the end, and a <tt class="docutils literal">CellExecutionError</tt> is raised
-if one or more cells threw an error. In this case, the output notebook
-will contain the stack-traces and error messages for all the failing&nbsp;cells.</p>
+the notebook is executed until the end, regardless of any error encountered
+during the execution. The output notebook,
+will contain the stack-traces and error messages for <strong>all</strong> the cells
+raising&nbsp;exceptions.</p>
 </div>
-<div class="section" id="conclusion">
-<h2>Conclusion</h2>
+<div class="section" id="conclusions">
+<h2>Conclusions</h2>
 <p>Automating notebook execution can save time, facilitate testing and increase
 robustness of computational pipelines base on notebooks.
 <tt class="docutils literal">nbconvert</tt> serves the basic execution needs for most projects and has
 the benefits of being a standard Jupyter&nbsp;component.</p>
 <p>Another project worth mentioning is
 <a class="reference external" href="https://github.com/paulgb/runipy">runipy</a>, which a few years ago
-was the only easy way to run notebooks in batches. With the recent features
-gained by nbconvert, simple batch execution cases don&#8217;t need runipy anymore.
-runipy is still actively developed, however, as it is useful for backward
-compatibility and to provide additional features not directly available in&nbsp;nbconvert.</p>
-<blockquote>
-I&#8217;ve not used runipy in a long time, so feel free leave a comment and
-correct me on the specific advantages of using runipy vs nbconvert.</blockquote>
-<p>Finally, I&#8217;m currently playing with the possibility of
-<a class="reference external" href="https://github.com/tritemio/nbrun">passing arguments to the notebook to be executed</a>,
-but this will be the topic of a next&nbsp;post.</p>
+was the only easy way to run notebooks in&nbsp;batches.</p>
+<p>A natural extension to executing notebooks programmatically is passing
+arguments, for example to select data files or analysis parameters.
+You can find an experimental implementation of parameter passing in
+<a class="reference external" href="https://github.com/tritemio/nbrun">nbrun</a>.</p>
 </div>
 <p>There are <a href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
