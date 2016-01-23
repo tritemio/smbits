@@ -3,7 +3,7 @@ Introducing Photon-HDF5
 
 :date: 2016-01-05
 :modified: 2016-01-05
-:tags: photon-hdf5, HDF5, smFRET, single-molecule, data format
+:tags: photon-hdf5, HDF5, smFRET, single-molecule, data format, openscience, opendata
 :category: Scientific Computing
 :slug: photon-hdf5
 :authors: Antonino Ingargiola

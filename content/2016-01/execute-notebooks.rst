@@ -2,7 +2,7 @@ Batch Execution of Jupyter Notebooks
 ====================================
 
 :date: 2016-01-02
-:modified: 2016-01-04
+:modified: 2016-01-23
 :tags: jupyter, notebook, batch-processing, nbconvert, python
 :category: Scientific Computing
 :slug: execute-notebooks
@@ -10,10 +10,14 @@ Batch Execution of Jupyter Notebooks
 :summary: Batch execution of jupyter notebooks using nbconvert.
 :status: published
 
-In this post I show how to use `nbconvert <http://nbconvert.readthedocs.org/>`__ (4.1+) Python API
+In this post I show how to use `nbconvert <http://nbconvert.readthedocs.org/>`__'s (4.1+) Python API
 to programmatically execute notebooks.
 
-**EDIT**: *moved paragraph.*
+- **EDIT 2016-01-05**: *moved paragraph.*
+- **EDIT 2016-01-15**: *apply corrections from Jupyter team*
+
+    With the help of the Jupyter team, most of this post is now part of
+    the official `nbconvert docs <http://nbconvert.readthedocs.org/en/latest/execute_api.html>`__!
 
 Intro
 -----
@@ -64,7 +68,7 @@ We specified two (optional) arguments ``timeout`` and ``kernel_name``, which
 define respectively the cell execution timeout and the execution kernel.
 
     The option to specify **kernel_name** is `new <https://github.com/jupyter/nbconvert/pull/177>`__
-    in nbconvert 4.2+ (4.2 is still unreleased).
+    in nbconvert 4.2+ (4.2 is at the moment still unreleased).
     When not specified or when using nbconvert <4.2,
     the default Python kernel is chosen.
 
