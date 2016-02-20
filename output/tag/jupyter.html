@@ -21,7 +21,125 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/">Batch Execution of Jupyter&nbsp;Notebooks</a></h1>
+                    <h1 class="entry-title"><a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/">Enters&nbsp;FRETBursts</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-02-19T00:00:00-08:00">
+                Published: Fri 19 February 2016
+        </abbr>
+		<br />
+        <abbr class="modified" title="2016-02-19T00:00:00-08:00">
+                Updated: Fri 19 February 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
+        </address>
+<p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
+<p>tags: <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/openscience.html">openscience</a> <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/preprints.html">preprints</a> </p>
+</footer><!-- /.post-info --><img alt="smFRET E-S histograms: ALEX jointplot produced by FRETBursts" class="align-left" src="https://cloud.githubusercontent.com/assets/4156237/12906391/9866197a-ce94-11e5-932b-548a511e4840.png" style="width: 400px;" />
+<p>A few days ago I uploaded a <a class="reference external" href="http://dx.doi.org/10.1101/039198">software paper</a>
+to the bioRxiv introducing <a class="reference external" href="http://tritemio.github.io/FRETBursts/">FRETBursts</a>,
+an open source burst analysis python software for
+single-molecule <span class="caps">FRET</span> data. In this post I highlight the aims of the manuscript
+and a few strengths of&nbsp;FRETBursts.</p>
+<div class="section" id="the-manuscript">
+<h2>The&nbsp;Manuscript</h2>
+<p>We wrote the <a class="reference external" href="http://dx.doi.org/10.1101/039198">manuscript</a> not only as an
+introduction to the FRETBursts software but also as an accessible introduction
+to burst analysis for smFRET data.
+While writing the paper we had several target readers in mind.
+Primarily, it should help newbies to familiarize with the conceptual steps
+of the analysis while at the same time learning how to perform them
+in FRETBursts.
+Additionally, users with previous experience in smFRET data analysis,
+can find the detailed description helpful to clarify
+exactly where FRETBursts implementation differs from
+(or improves upon) commonly used algorithms. Finally, users with familiarity
+with the python programming language can appreciate the software architecture
+and data structures used to implement&nbsp;FRETBursts.</p>
+<p>In order not to scare away readers with no python experience we relegated
+most of the language-specific details to special paragraphs marked as
+&#8220;Python&nbsp;details&#8221;.</p>
+</div>
+<div class="section" id="fretbursts-execution-model">
+<h2>FRETBursts execution&nbsp;model</h2>
+<p>FRETBursts is primary executed through the Jupyter notebook environment.
+One advantage of Jupyter Notebook is that it binds together a narrative
+description of the analysis, the code commands and the results in a single
+interactive document that can be shared, modified and re-executed.
+If you have never heard of Jupyter notebook you should definitely
+<a class="reference external" href="http://jupyter.org/">check it out</a> (see also
+<a class="reference external" href="http://www.nature.com/news/interactive-notebooks-sharing-the-code-1.16261">this paper</a>
+which provides a&nbsp;demo).</p>
+<p>You can start using FRETBursts by simply executing pre-made notebooks
+(we provide <a class="reference external" href="http://nbviewer.jupyter.org/github/tritemio/FRETBursts_notebooks/blob/master/notebooks/FRETBursts%20-%20us-ALEX%20smFRET%20burst%20analysis.ipynb">several examples</a>).
+But, as you gain more confidence, you can
+customize the analysis by changing parameters, invoking different analysis
+methods or making different plots. The Jupyter environment allows
+a smooth transition from beginner to&nbsp;power-user.</p>
+<p>Additionally, for users with deep experience in smFRET data analysis, FRETBursts
+provides well-tested low-level methods for processing timestamps
+and burst&nbsp;data.</p>
+<p>As an example, SangYoon Chung (a Ph.D. candidate in our lab), recently
+wrote a notebook implementing the <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059737/">Burst Variance Analysis</a>
+(<span class="caps">BVA</span>) using FRETBursts,
+with no previous experience in programming (and only some elementary
+notions of python).
+This, of course, speaks volumes about SangYoon&#8217;s abilities to learn new
+topics (his expertise is molecular biology and biophysics).
+But it gave us a great example of how to use core FRETBursts routines
+for manipulating timestamps and burst data for implementing a new&nbsp;analysis.</p>
+<p>SangYoon&#8217;s <a class="reference external" href="http://nbviewer.jupyter.org/github/tritemio/FRETBursts_notebooks/blob/master/notebooks/Example%20-%20Burst%20Variance%20Analysis.ipynb">notebook</a>
+has been now added to FRETBursts. Moreover, we have
+a section dedicated to the <span class="caps">BVA</span> implementation in the FRETBursts&nbsp;manuscript.</p>
+</div>
+<div class="section" id="fretbursts-reliability">
+<h2>FRETBursts&nbsp;reliability</h2>
+<p>All software have bugs. In biology or biophysics a software usually
+gain &#8220;respect&#8221; when it is used in several publication and yields &#8220;reasonable&#8221;
+results. While this type of &#8220;field&#8221; validation is very important,
+it is <a class="reference external" href="http://ivory.idyll.org/blog/2016-containerization-disaster.html">not enough</a>
+to demonstrate the correctness of a given software
+implementation. In many cases we mis-place our trust in the correctness
+of a software only because it is widely&nbsp;used.</p>
+<p>Conversely, modern software engineering practices such as defensive programming
+and unit testing, allow to minimize the presence of bugs, catch rare error
+conditions and avoid regressions. In FRETBursts I use such common techniques.
+All the core analysis functions, for example, have extensive unit tests that are
+automatically executed at each commit though the <a class="reference external" href="https://travis-ci.org/tritemio/FRETBursts">TravisCI</a>
+service.
+So, you don&#8217;t have to trust my infallibility, but rather trust the &#8220;bug traps&#8221;
+(i.e. <a class="reference external" href="https://github.com/tritemio/FRETBursts/tree/master/fretbursts/tests">tests</a>)
+I put in place to protect you against my own&nbsp;errors.</p>
+</div>
+<div class="section" id="feedback">
+<h2>Feedback</h2>
+<p>In the spirit of open science we are eager to receive comments about the
+software and/or the manuscript. We also are enthusiastically adopting and
+supporting the immediate publications (i.e. <a class="reference external" href="http://www.nature.com/news/biologists-urged-to-hug-a-preprint-1.19384">pre-prints</a>)
+for fast dissemination of scientific knowledge.
+So, in <a class="reference external" href="http://asapbio.org/meeting-information/objectives">this spirit</a>,
+if you find something is not clear or you think
+there is some glaring omission please let us know. We will soon send
+the manuscript for formal peer-review, but in the meanwhile we are also
+probing the ground with the &#8220;internet&nbsp;community&#8221;.</p>
+<hr class="docutils" />
+<p><em>Thanks to Eitan Lerner for critical reading of an early draft of this&nbsp;post.</em></p>
+</div>
+<p>There are <a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/" rel="bookmark"
+                           title="Permalink to Batch Execution of Jupyter Notebooks">Batch Execution of Jupyter&nbsp;Notebooks</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-01-02T00:00:00-08:00">
                 Published: Sat 02 January 2016
@@ -36,153 +154,13 @@
         </address>
 <p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
 <p>tags: <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/notebook.html">notebook</a> <a href="http://tritemio.github.io/smbits/tag/batch-processing.html">batch-processing</a> <a href="http://tritemio.github.io/smbits/tag/nbconvert.html">nbconvert</a> <a href="http://tritemio.github.io/smbits/tag/python.html">python</a> </p>
-</footer><!-- /.post-info --><p>In this post I show how to use <a class="reference external" href="http://nbconvert.readthedocs.org/">nbconvert</a>&#8216;s (4.1+) Python <span class="caps">API</span>
-to programmatically execute&nbsp;notebooks.</p>
-<ul>
-<li><p class="first"><strong><span class="caps">EDIT</span> 2016-01-05</strong>: <em>moved&nbsp;paragraph.</em></p>
-</li>
-<li><p class="first"><strong><span class="caps">EDIT</span> 2016-01-15</strong>: <em>apply corrections from Jupyter&nbsp;team</em></p>
-<blockquote>
-<p>With the help of the Jupyter team, most of this post is now part of
-the official <a class="reference external" href="http://nbconvert.readthedocs.org/en/latest/execute_api.html">nbconvert docs</a>!</p>
-</blockquote>
-</li>
-</ul>
-<div class="section" id="intro">
-<h2>Intro</h2>
-<p><a class="reference external" href="http://jupyter.org/">Jupyter</a> notebooks are increasingly used in scientific computing.
-For example, computational projects often include several notebooks to carry out
-different parts of a bigger analysis. Or, libraries include
-notebooks to provide documentation, examples or&nbsp;tests.</p>
-<p>In all these cases, running notebook in batches, removes manual work
-increasing robustness and&nbsp;reproducibility.</p>
-<p><a class="reference external" href="http://nbconvert.readthedocs.org/">nbconvert</a>, the Jupyter component used
-to convert notebooks, can be used to automatically execute and save one or more
-notebooks.
-This functionality is exposed through a Python <span class="caps">API</span> (explored in this post)
-and a similar
-<a class="reference external" href="http://nbconvert.readthedocs.org/en/latest/usage.html">command line interface</a>.</p>
-</div>
-<div class="section" id="a-quick-example">
-<h2>A Quick&nbsp;Example</h2>
-<p>Let&#8217;s start with a complete quick example, leaving detailed explanations
-to the following&nbsp;sections.</p>
-<p>First we import nbconvert and the <tt class="docutils literal">ExecutePreprocessor</tt> class:</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">nbformat</span>
-<span class="kn">from</span> <span class="nn">nbconvert.preprocessors</span> <span class="kn">import</span> <span class="n">ExecutePreprocessor</span>
-</pre></div>
-<p>Assuming that <tt class="docutils literal">notebook_filename</tt> is the path of a notebook,
-we can load it&nbsp;with:</p>
-<div class="highlight"><pre><span class="n">nb</span> <span class="o">=</span> <span class="n">nbformat</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">notebook_filename</span><span class="p">),</span> <span class="n">as_version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-</pre></div>
-<p>Next, we configure the notebook execution&nbsp;mode:</p>
-<div class="highlight"><pre><span class="n">ep</span> <span class="o">=</span> <span class="n">ExecutePreprocessor</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">kernel_name</span><span class="o">=</span><span class="s">&#39;python3&#39;</span><span class="p">)</span>
-</pre></div>
-<p>We specified two (optional) arguments <tt class="docutils literal">timeout</tt> and <tt class="docutils literal">kernel_name</tt>, which
-define respectively the cell execution timeout and the execution&nbsp;kernel.</p>
-<blockquote>
-The option to specify <strong>kernel_name</strong> is <a class="reference external" href="https://github.com/jupyter/nbconvert/pull/177">new</a>
-in nbconvert 4.2+ (4.2 is at the moment still unreleased).
-When not specified or when using nbconvert &lt;4.2,
-the default Python kernel is chosen.</blockquote>
-<p>To actually run the notebook we call the method <tt class="docutils literal">preprocess</tt>:</p>
-<div class="highlight"><pre><span class="n">ep</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;path&#39;</span><span class="p">:</span> <span class="s">&#39;notebooks/&#39;</span><span class="p">}})</span>
-</pre></div>
-<p>Hopefully, we will not get any errors during the notebook execution
-(see the last section for error handling). Note that <tt class="docutils literal">path</tt> specifies
-in which folder to execute the notebook.
-Finally, save the resulting notebook&nbsp;with:</p>
-<div class="highlight"><pre><span class="n">nbformat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;executed_notebook.ipynb&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;wt&#39;</span><span class="p">))</span>
-</pre></div>
-<p>That&#8217;s all. Your executed notebook will be saved in the current folder
-in the file <em>executed_notebook.ipynb</em>.</p>
-</div>
-<div class="section" id="execution-arguments">
-<h2>Execution&nbsp;Arguments</h2>
-<p>The arguments passed to <tt class="docutils literal">ExecutePreprocessor</tt> are configuration options
-called <a class="reference external" href="http://traitlets.readthedocs.org/">traitlets</a>.
-There are many cool things about traitlets, for example
-they enforce the type of the input and they can be accessed/modified as
-class attributes. Moreover, each traitlet is automatically exposed
-as command-line options. For example, we can pass the timeout from the
-command-line like&nbsp;this:</p>
-<pre class="literal-block">
-jupyter nbconvert --ExecutePreprocessor.timeout=600 --to notebook --execute mynotebook.ipynb
-</pre>
-<p>Let&#8217;s now discuss in more detail the two traitlets we&nbsp;used.</p>
-<p>The <tt class="docutils literal">timeout</tt> traitlet defines the maximum time (in seconds) each notebook
-cell is
-allowed to run, if the execution takes longer an exception will be raised.
-The default is 30 s, so in cases of long-running cells you may want to specify
-an higher&nbsp;value.</p>
-<p>The second traitlet, <tt class="docutils literal">kernel_name</tt>, allows specifying the name of the kernel
-to be used for the execution. By default, the kernel name is obtained from the
-notebook metadata. The traitlet <tt class="docutils literal">kernel_name</tt> allows to specify a user-defined
-kernel, overriding the value in the notebook metadata. A common use case
-is that of a Python 2/3 library which includes documentation/testing
-notebooks. These notebooks will specify either a python2 or python3 kernel
-in their metadata
-(depending on the kernel used the last time the notebook was saved).
-In reality, these notebooks will work on both Python 2/3 and, for testing,
-it is important to be able to execute them programmatically on both
-versions. Here the traitlet <tt class="docutils literal">kernel_name</tt> is helpful:
-we can just run each notebook twice, specifying first &#8220;python2&#8221; and then
-&#8220;python3&#8221; as kernel&nbsp;name.</p>
-</div>
-<div class="section" id="error-handling">
-<h2>Error&nbsp;Handling</h2>
-<p>In the previous sections we saw how to save an executed notebook, assuming
-there are no execution errors. But, what if there are&nbsp;errors?</p>
-<p>An error during the notebook execution, by default, will stop the execution
-and raise a <tt class="docutils literal">CellExecutionError</tt>. Conveniently, the source cell causing
-the error and the original error name and message are also printed.
-After an error, we can still save the notebook as&nbsp;before:</p>
-<div class="highlight"><pre><span class="n">nbformat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;executed_notebook.ipynb&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;wt&#39;</span><span class="p">))</span>
-</pre></div>
-<p>The saved notebook contains the output up until the failing cell,
-and includes a full stack-trace and error (which can help debugging).
-A pattern I use to execute notebooks while handling errors is the&nbsp;following:</p>
-<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="n">ep</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;metadata&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;path&#39;</span><span class="p">:</span> <span class="n">run_path</span><span class="p">}})</span>
-<span class="k">except</span> <span class="n">CellExecutionError</span><span class="p">:</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s">&#39;Error executing the notebook &quot;</span><span class="si">%s</span><span class="s">&quot;.</span><span class="se">\n\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">notebook_filename</span>
-    <span class="n">msg</span> <span class="o">+=</span> <span class="s">&#39;See notebook &quot;</span><span class="si">%s</span><span class="s">&quot; for the traceback.&#39;</span> <span class="o">%</span> <span class="n">notebook_filename_out</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    <span class="k">raise</span>
-<span class="k">finally</span><span class="p">:</span>
-    <span class="n">nbformat</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nb</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">notebook_filename_out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;wt&#39;</span><span class="p">))</span>
-</pre></div>
-<p>This will save the executed notebook regardless of execution errors.
-In case of errors, however, an additional message is printed and the
-<tt class="docutils literal">CellExecutionError</tt> is raised. The message directs the user to
-the saved notebook for further&nbsp;inspection.</p>
-<p>As a last scenario, it is sometimes useful to execute notebooks which
-raise exceptions, for example to show an error condition.
-In this case, instead of stopping the execution on the first error,
-we can keep executing the notebook using the traitlet <tt class="docutils literal">allow_errors</tt>
-(default False).
-With <tt class="docutils literal">allow_errors=True</tt>,
-the notebook is executed until the end, regardless of any error encountered
-during the execution. The output notebook,
-will contain the stack-traces and error messages for <strong>all</strong> the cells
-raising&nbsp;exceptions.</p>
-</div>
-<div class="section" id="conclusions">
-<h2>Conclusions</h2>
-<p>Automating notebook execution can save time, facilitate testing and increase
-robustness of computational pipelines base on notebooks.
-<tt class="docutils literal">nbconvert</tt> serves the basic execution needs for most projects and has
-the benefits of being a standard Jupyter&nbsp;component.</p>
-<p>Another project worth mentioning is
-<a class="reference external" href="https://github.com/paulgb/runipy">runipy</a>, which a few years ago
-was the only easy way to run notebooks in&nbsp;batches.</p>
-<p>A natural extension to executing notebooks programmatically is passing
-arguments, for example to select data files or analysis parameters.
-You can find an experimental implementation of parameter passing in
-<a class="reference external" href="https://github.com/tritemio/nbrun">nbrun</a>.</p>
-</div>
-<p>There are <a href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
+</footer><!-- /.post-info -->                <p class="first last">Batch execution of jupyter notebooks using&nbsp;nbconvert.</p>
+
+                <a class="readmore" href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/">read more</a>
+<p>There are <a href="http://tritemio.github.io/smbits/2016/01/02/execute-notebooks/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
