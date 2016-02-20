@@ -29,7 +29,7 @@ We wrote the `manuscript <http://dx.doi.org/10.1101/039198>`__ not only as an
 introduction to the FRETBursts software but also as an accessible introduction
 to burst analysis for smFRET data.
 While writing the paper we had several target readers in mind.
-Primary, it should help newbies to familiarize with the conceptual steps
+Primarily, it should help newbies to familiarize with the conceptual steps
 of the analysis while at the same time learning how to perform them
 in FRETBursts.
 Additionally, users with previous experience in smFRET data analysis,
@@ -39,7 +39,7 @@ exactly where FRETBursts implementation differs from
 with the python programming language can appreciate the software architecture
 and data structures used to implement FRETBursts.
 
-In order to don't scare away readers with no python experience we relegated
+In order not to scare away readers with no python experience we relegated
 most of the language-specific details to special paragraphs marked as
 "Python details".
 
@@ -71,7 +71,7 @@ wrote a notebook implementing the `Burst Variance Analysis <http://www.ncbi.nlm.
 (BVA) using FRETBursts,
 with no previous experience in programming (and only some elementary
 notions of python).
-This, of course, speaks volumes about SangYoon abilities to learn new
+This, of course, speaks volumes about SangYoon's abilities to learn new
 topics (his expertise is molecular biology and biophysics).
 But it gave us a great example of how to use core FRETBursts routines
 for manipulating timestamps and burst data for implementing a new
@@ -88,7 +88,7 @@ FRETBursts reliability
 All software have bugs. In biology or biophysics a software usually
 gain "respect" when it is used in several publication and yields "reasonable"
 results. While this type of "field" validation is very important,
-`is not enough <http://ivory.idyll.org/blog/2016-containerization-disaster.html>`__
+it is `not enough <http://ivory.idyll.org/blog/2016-containerization-disaster.html>`__
 to demonstrate the correctness of a given software
 implementation. In many cases we mis-place our trust in the correctness
 of a software only because it is widely used.
@@ -99,8 +99,9 @@ conditions and avoid regressions. In FRETBursts I use such common techniques.
 All the core analysis functions, for example, have extensive unit tests that are
 automatically executed at each commit though the `TravisCI <https://travis-ci.org/tritemio/FRETBursts>`__
 service.
-So, you don't have to trust my infallibility, but trust the "bug traps"
-(i.e. tests) I put in place to protect you against my own errors.
+So, you don't have to trust my infallibility, but rather trust the "bug traps"
+(i.e. `tests <https://github.com/tritemio/FRETBursts/tree/master/fretbursts/tests>`__)
+I put in place to protect you against my own errors.
 
 
 Feedback
