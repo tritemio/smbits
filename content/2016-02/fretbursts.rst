@@ -8,7 +8,7 @@ Enters FRETBursts
 :slug: fretbursts
 :authors: Antonino Ingargiola
 :summary: Analyze smFRET data with FRETBursts: a new paper on bioRxiv.
-:status: draft
+:status: published
 
 .. image:: https://cloud.githubusercontent.com/assets/4156237/12906391/9866197a-ce94-11e5-932b-548a511e4840.png
     :alt: smFRET E-S histograms: ALEX jointplot produced by FRETBursts
@@ -117,3 +117,8 @@ if you find something is not clear or you think
 there is some glaring omission please let us know. We will soon send
 the manuscript for formal peer-review, but in the meanwhile we are also
 probing the ground with the "internet community".
+
+
+----
+
+*Thanks to Eitan Lerner for critical reading of an early draft of this post.*
