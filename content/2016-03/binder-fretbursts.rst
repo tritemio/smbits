@@ -30,7 +30,8 @@ of the FRETBursts environment on the cloud:
 
 The previous button will open a new page in your browser
 showing the `Jupyter Dashboard <http://jupyter-notebook-beginner-guide.readthedocs.org/en/latest/what_is_jupyter.html#notebook-dashboard>`__.
-From there, you only have to select which FRETBursts notebook to open and run.
+There, in the *notebooks* folder, you will find multiple FRETBursts notebooks
+for different kind of analysis. All you have to do is pick one and run it.
 
 .. note::
     If you are new to Jupyter Notebook start by clicking on the *First Steps* notebook.
@@ -127,3 +128,8 @@ Synergies made possible by open source technologies **plus** skillful
 individuals can make miracles.
 
 In other words, with FRETBursts, we really stand on giant's shoulders!
+
+
+----
+
+*Thanks to Yazan Alhadid for commenting on an early draft of this post.*
