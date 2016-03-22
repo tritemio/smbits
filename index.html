@@ -21,7 +21,133 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/">Enters&nbsp;FRETBursts</a></h1>
+                    <h1 class="entry-title"><a href="http://tritemio.github.io/smbits/2016/03/22/binder-fretbursts/">On-Line Analysis of smFRET&nbsp;Data</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-03-22T00:00:00-07:00">
+                Published: Tue 22 March 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
+        </address>
+<p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
+<p>tags: <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/openscience.html">openscience</a> <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/reproducibility.html">reproducibility</a> <a href="http://tritemio.github.io/smbits/tag/mybinder.html">mybinder</a> </p>
+</footer><!-- /.post-info --><p>In a <a class="reference external" href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/">previous post</a>, I introduced
+<a class="reference external" href="http://tritemio.github.io/FRETBursts/">FRETBursts</a>, an open source
+burst analysis software for single-molecule <span class="caps">FRET</span> (smFRET) data with a strong
+focus on reproducibility.
+Today, I talk about a new service (based on <a class="reference external" href="http://MyBinder.org">MyBinder.org</a>)
+which allows running <a class="reference external" href="https://github.com/tritemio/FRETBursts_notebooks#run-online">FRETBursts on-line</a>,
+with zero&nbsp;installation.</p>
+<p>With this new service you can try FRETBursts without the need
+to install anything (i.e. python) on your computer.
+All you need is clicking the following button, which will open a new instance
+of the FRETBursts environment on the&nbsp;cloud:</p>
+<a class="reference external image-reference" href="http://mybinder.org/repo/tritemio/FRETBursts_notebooks"><object data="http://mybinder.org/badge.svg" type="image/svg+xml">button launch binder</object></a>
+<p>The previous button will open a new page in your browser
+showing the <a class="reference external" href="http://jupyter-notebook-beginner-guide.readthedocs.org/en/latest/what_is_jupyter.html#notebook-dashboard">Jupyter Dashboard</a>.
+There, in the <em>notebooks</em> folder, you will find multiple FRETBursts notebooks
+for different kind of analysis. All you have to do is pick one and run&nbsp;it.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are new to Jupyter Notebook start by clicking on the <em>First Steps</em>&nbsp;notebook.</p>
+</div>
+<p>In the future, publications using FRETBursts will hopefully also deposit
+the data on a public repository (such as <a class="reference external" href="https://zenodo.org/">Zenodo</a>
+or <a class="reference external" href="https://figshare.com/">Figshare</a>).
+This will enable anybody to replicate
+the computations in a paper simply using FRETBursts on the&nbsp;cloud.</p>
+<div class="section" id="features-and-limitations">
+<h2>Features and&nbsp;Limitations</h2>
+<p>At the moment, the notebooks available in the on-line service are
+the same ones included in FRETBursts source repository.
+When ran unmodified, they will download a sample data file
+and run the analysis on it.
+You can also use your own data file which needs to be uploaded first
+(see the <em>First Steps</em> notebook). You can even upload your own FRETBursts
+notebook, if you happen to have one&nbsp;already.</p>
+<p>A current technical limitation
+(that <a class="reference external" href="https://github.com/jupyter/notebook/issues/96">will be soon fixed</a>)
+is that the <strong>Upload</strong> button on the dashboard works only form small files (&lt;<span class="caps">35MB</span>).
+For bigger files, you have to upload the data somewhere on the internet
+and then download it to the server
+(see explanation in the <em>First Steps</em>&nbsp;notebook).</p>
+<p>As a final caveat, note that sessions on MyBinder are not permanent
+(they are deleted after 1 hour of inactivity).
+Therefore, if you modify a notebook and want store it for reference or future
+use, please remember to download it on your own&nbsp;computer.</p>
+<p>Feedback and questions are more than welcome.
+Please open a
+<a class="reference external" href="https://github.com/tritemio/FRETBursts_notebooks/issues">GitHub Issue</a>
+to discuss anything related to this&nbsp;service.</p>
+</div>
+<div class="section" id="behind-the-scenes">
+<h2>Behind the&nbsp;Scenes</h2>
+<p>Even though MyBinder is an incredibly sophisticated service, setting it
+up is incredibly easy. So easy that anybody (either using FRETBursts or not)
+can setup a similar service to complement a publication, for&nbsp;example.</p>
+<p>Starting from a repository containing a bunch of notebooks,
+all I had to do was adding
+a <a class="reference external" href="https://github.com/tritemio/FRETBursts_notebooks/blob/master/environment.yml">text file</a>
+with the list of (<a class="reference external" href="http://conda.pydata.org/docs/">conda</a>) packages to be installed on the server
+(and that file was mostly auto-generated). Then, MyBinder.org did the&nbsp;magic.</p>
+<p>Here, I want to briefly highlight some pre-conditions that made possible
+building such an incredible&nbsp;service.</p>
+<p>First and foremost it&#8217;s open source.
+Like continuous integration (an automated testing infrastructure),
+the service that allows to run FRETBursts on-line exists only because
+all the FRETBursts software dependencies (python, jupyter,
+numpy, scipy, lmfit, matplotlib, etc&#8230;) are free an open source.
+If FRETBursts were written in <span class="caps">MATLAB</span>, for example, due to licensing cost,
+running a continuous integration service or a service like MyBinder.org
+to execute <span class="caps">MATLAB</span> code on the cloud would have been prohibitively expensive.
+Moreover, since it would have been a closed platform, it would not have
+received the sort or contributions (form individual and companied across the
+world) that these software have. The technical (and ethical) superiority
+of open source software for scientific computing cannot be understated
+(see <a class="reference external" href="http://dx.doi.org/10.1016/j.conb.2015.04.002">this paper</a>
+for more detailed&nbsp;argumentations).</p>
+<p>Second,
+<a class="reference external" href="https://github.com/tritemio/FRETBursts/commit/f4de178f834f1341f01a5c494ac659537c70298d">early</a>
+in development of FRETBursts,
+I choose to base the execution on Jupyter Notebooks
+(at the time called IPython Notebook).
+This allowed me to focus on developing FRETBursts as a library,
+avoiding wasting time building GUIs or command line interfaces
+that can easily become bloated or obsolete.
+On the contrary, the notebook interface represents a semi-graphical
+interface which is good enough even for non-programmers.
+Notebooks are also quite good for storing full analysis workflows,
+drastically simplifying the way we share analysis details and&nbsp;results.</p>
+<p>Third, and most importantly, Jeremy Freeman and collaborators built MyBinder,
+a service to execute on the could any Jupyter notebook contained
+in a GitHub repository.
+This was possible by recent developments in the Jupyter project
+(e.g. JupyterHub), together
+with a clever use of modern cloud technologies (docker + kubernetes).
+For an introduction to MyBinder in scientific computing
+see <a class="reference external" href="http://ivory.idyll.org/blog/2016-mybinder.html">this interesting post</a>
+from Titus&nbsp;Brown.</p>
+<p>Synergies made possible by open source technologies <strong>plus</strong> skillful
+individuals can make&nbsp;miracles.</p>
+<p>In other words, with FRETBursts, we really stand on giant&#8217;s&nbsp;shoulders!</p>
+<hr class="docutils" />
+<p><em>Thanks to Yazan Alhadid for commenting on an early draft of this&nbsp;post.</em></p>
+</div>
+<p>There are <a href="http://tritemio.github.io/smbits/2016/03/22/binder-fretbursts/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/" rel="bookmark"
+                           title="Permalink to Enters FRETBursts">Enters&nbsp;FRETBursts</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-02-19T00:00:00-08:00">
                 Published: Fri 19 February 2016
@@ -36,102 +162,11 @@
         </address>
 <p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
 <p>tags: <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/openscience.html">openscience</a> <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/preprints.html">preprints</a> </p>
-</footer><!-- /.post-info --><img alt="smFRET E-S histograms: ALEX jointplot produced by FRETBursts" class="align-left" src="https://cloud.githubusercontent.com/assets/4156237/12906391/9866197a-ce94-11e5-932b-548a511e4840.png" style="width: 400px;" />
-<p>A few days ago I uploaded a <a class="reference external" href="http://dx.doi.org/10.1101/039198">software paper</a>
-to the bioRxiv introducing <a class="reference external" href="http://tritemio.github.io/FRETBursts/">FRETBursts</a>,
-an open source burst analysis python software for
-single-molecule <span class="caps">FRET</span> data. In this post I highlight the aims of the manuscript
-and a few strengths of&nbsp;FRETBursts.</p>
-<div class="section" id="the-manuscript">
-<h2>The&nbsp;Manuscript</h2>
-<p>We wrote the <a class="reference external" href="http://dx.doi.org/10.1101/039198">manuscript</a> not only as an
-introduction to the FRETBursts software but also as an accessible introduction
-to burst analysis for smFRET data.
-While writing the paper we had several target readers in mind.
-Primarily, it should help newbies to familiarize with the conceptual steps
-of the analysis while at the same time learning how to perform them
-in FRETBursts.
-Additionally, users with previous experience in smFRET data analysis,
-can find the detailed description helpful to clarify
-exactly where FRETBursts implementation differs from
-(or improves upon) commonly used algorithms. Finally, users with familiarity
-with the python programming language can appreciate the software architecture
-and data structures used to implement&nbsp;FRETBursts.</p>
-<p>In order not to scare away readers with no python experience we relegated
-most of the language-specific details to special paragraphs marked as
-&#8220;Python&nbsp;details&#8221;.</p>
-</div>
-<div class="section" id="fretbursts-execution-model">
-<h2>FRETBursts execution&nbsp;model</h2>
-<p>FRETBursts is primary executed through the Jupyter notebook environment.
-One advantage of Jupyter Notebook is that it binds together a narrative
-description of the analysis, the code commands and the results in a single
-interactive document that can be shared, modified and re-executed.
-If you have never heard of Jupyter notebook you should definitely
-<a class="reference external" href="http://jupyter.org/">check it out</a> (see also
-<a class="reference external" href="http://www.nature.com/news/interactive-notebooks-sharing-the-code-1.16261">this paper</a>
-which provides a&nbsp;demo).</p>
-<p>You can start using FRETBursts by simply executing pre-made notebooks
-(we provide <a class="reference external" href="http://nbviewer.jupyter.org/github/tritemio/FRETBursts_notebooks/blob/master/notebooks/FRETBursts%20-%20us-ALEX%20smFRET%20burst%20analysis.ipynb">several examples</a>).
-But, as you gain more confidence, you can
-customize the analysis by changing parameters, invoking different analysis
-methods or making different plots. The Jupyter environment allows
-a smooth transition from beginner to&nbsp;power-user.</p>
-<p>Additionally, for users with deep experience in smFRET data analysis, FRETBursts
-provides well-tested low-level methods for processing timestamps
-and burst&nbsp;data.</p>
-<p>As an example, SangYoon Chung (a Ph.D. candidate in our lab), recently
-wrote a notebook implementing the <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3059737/">Burst Variance Analysis</a>
-(<span class="caps">BVA</span>) using FRETBursts,
-with no previous experience in programming (and only some elementary
-notions of python).
-This, of course, speaks volumes about SangYoon&#8217;s abilities to learn new
-topics (his expertise is molecular biology and biophysics).
-But it gave us a great example of how to use core FRETBursts routines
-for manipulating timestamps and burst data for implementing a new&nbsp;analysis.</p>
-<p>SangYoon&#8217;s <a class="reference external" href="http://nbviewer.jupyter.org/github/tritemio/FRETBursts_notebooks/blob/master/notebooks/Example%20-%20Burst%20Variance%20Analysis.ipynb">notebook</a>
-has been now added to FRETBursts. Moreover, we have
-a section dedicated to the <span class="caps">BVA</span> implementation in the FRETBursts&nbsp;manuscript.</p>
-</div>
-<div class="section" id="fretbursts-reliability">
-<h2>FRETBursts&nbsp;reliability</h2>
-<p>All software have bugs. In biology or biophysics a software usually
-gain &#8220;respect&#8221; when it is used in several publication and yields &#8220;reasonable&#8221;
-results. While this type of &#8220;field&#8221; validation is very important,
-it is <a class="reference external" href="http://ivory.idyll.org/blog/2016-containerization-disaster.html">not enough</a>
-to demonstrate the correctness of a given software
-implementation. In many cases we mis-place our trust in the correctness
-of a software only because it is widely&nbsp;used.</p>
-<p>Conversely, modern software engineering practices such as defensive programming
-and unit testing, allow to minimize the presence of bugs, catch rare error
-conditions and avoid regressions. In FRETBursts I use such common techniques.
-All the core analysis functions, for example, have extensive unit tests that are
-automatically executed at each commit though the <a class="reference external" href="https://travis-ci.org/tritemio/FRETBursts">TravisCI</a>
-service.
-So, you don&#8217;t have to trust my infallibility, but rather trust the &#8220;bug traps&#8221;
-(i.e. <a class="reference external" href="https://github.com/tritemio/FRETBursts/tree/master/fretbursts/tests">tests</a>)
-I put in place to protect you against my own&nbsp;errors.</p>
-</div>
-<div class="section" id="feedback">
-<h2>Feedback</h2>
-<p>In the spirit of open science we are eager to receive comments about the
-software and/or the manuscript. We also are enthusiastically adopting and
-supporting the immediate publications (i.e. <a class="reference external" href="http://www.nature.com/news/biologists-urged-to-hug-a-preprint-1.19384">pre-prints</a>)
-for fast dissemination of scientific knowledge.
-So, in <a class="reference external" href="http://asapbio.org/meeting-information/objectives">this spirit</a>,
-if you find something is not clear or you think
-there is some glaring omission please let us know. We will soon send
-the manuscript for formal peer-review, but in the meanwhile we are also
-probing the ground with the &#8220;internet&nbsp;community&#8221;.</p>
-<hr class="docutils" />
-<p><em>Thanks to Eitan Lerner for critical reading of an early draft of this&nbsp;post.</em></p>
-</div>
-<p>There are <a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p class="first last">Analyze smFRET data with FRETBursts: a new paper on&nbsp;bioRxiv.</p>
+
+                <a class="readmore" href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/">read more</a>
+<p>There are <a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
