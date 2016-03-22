@@ -21,7 +21,7 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://tritemio.github.io/smbits/2016/03/22/fretbursts/">Run FRETBursts&nbsp;On-Line</a></h1>
+                    <h1 class="entry-title"><a href="http://tritemio.github.io/smbits/2016/03/22/binder-fretbursts/">On-Line Analysis of smFRET&nbsp;Data</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2016-03-22T00:00:00-07:00">
                 Published: Tue 22 March 2016
@@ -31,24 +31,23 @@
                 By                         <a class="url fn" href="http://tritemio.github.io/smbits/author/antonino-ingargiola.html">Antonino Ingargiola</a>
         </address>
 <p>In <a href="http://tritemio.github.io/smbits/category/scientific-computing.html">Scientific Computing</a>.</p>
-<p>tags: <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/openscience.html">openscience</a> <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/reproducibility.html">reproducibility</a> <a href="http://tritemio.github.io/smbits/tag/mybinder.html">mybinder</a> </p>Translations:
-        <a href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/">en</a>
-
+<p>tags: <a href="http://tritemio.github.io/smbits/tag/smfret.html">smFRET</a> <a href="http://tritemio.github.io/smbits/tag/openscience.html">openscience</a> <a href="http://tritemio.github.io/smbits/tag/jupyter.html">jupyter</a> <a href="http://tritemio.github.io/smbits/tag/reproducibility.html">reproducibility</a> <a href="http://tritemio.github.io/smbits/tag/mybinder.html">mybinder</a> </p>
 </footer><!-- /.post-info --><p>In a <a class="reference external" href="http://tritemio.github.io/smbits/2016/02/19/fretbursts/">previous post</a>, I introduced
 <a class="reference external" href="http://tritemio.github.io/FRETBursts/">FRETBursts</a>, an open source
-burst analysis software for single-molecule <span class="caps">FRET</span> data with a strong
+burst analysis software for single-molecule <span class="caps">FRET</span> (smFRET) data with a strong
 focus on reproducibility.
 Today, I talk about a new service (based on <a class="reference external" href="http://MyBinder.org">MyBinder.org</a>)
-which allows running <a class="reference external" href="https://github.com/tritemio/FRETBursts_notebooks#run-online">FRETBursts online</a>,
+which allows running <a class="reference external" href="https://github.com/tritemio/FRETBursts_notebooks#run-online">FRETBursts on-line</a>,
 with zero&nbsp;installation.</p>
 <p>With this new service you can try FRETBursts without the need
 to install anything (i.e. python) on your computer.
-All you need is clicking the following button, which will open in
-your browser a new-ly created instance of the FRETBursts environment
-on the&nbsp;cloud.</p>
+All you need is clicking the following button, which will open a new instance
+of the FRETBursts environment on the&nbsp;cloud:</p>
 <a class="reference external image-reference" href="http://mybinder.org/repo/tritemio/FRETBursts_notebooks"><object data="http://mybinder.org/badge.svg" type="image/svg+xml">button launch binder</object></a>
-<p>The page shown on the browser is the Jupyter Dashboard.
-From there, you only have to select which FRETBursts notebook to open and&nbsp;run.</p>
+<p>The previous button will open a new page in your browser
+showing the <a class="reference external" href="http://jupyter-notebook-beginner-guide.readthedocs.org/en/latest/what_is_jupyter.html#notebook-dashboard">Jupyter Dashboard</a>.
+There, in the <em>notebooks</em> folder, you will find multiple FRETBursts notebooks
+for different kind of analysis. All you have to do is pick one and run&nbsp;it.</p>
 <div class="note">
 <p class="first admonition-title">Note</p>
 <p class="last">If you are new to Jupyter Notebook start by clicking on the <em>First Steps</em>&nbsp;notebook.</p>
@@ -68,7 +67,7 @@ You can also use your own data file which needs to be uploaded first
 (see the <em>First Steps</em> notebook). You can even upload your own FRETBursts
 notebook, if you happen to have one&nbsp;already.</p>
 <p>A current technical limitation
-(that <a class="reference external" href="https://github.com/jupyter/notebook/issues/96">will be solved</a> in the future)
+(that <a class="reference external" href="https://github.com/jupyter/notebook/issues/96">will be soon fixed</a>)
 is that the <strong>Upload</strong> button on the dashboard works only form small files (&lt;<span class="caps">35MB</span>).
 For bigger files, you have to upload the data somewhere on the internet
 and then download it to the server
@@ -90,7 +89,7 @@ can setup a similar service to complement a publication, for&nbsp;example.</p>
 <p>Starting from a repository containing a bunch of notebooks,
 all I had to do was adding
 a <a class="reference external" href="https://github.com/tritemio/FRETBursts_notebooks/blob/master/environment.yml">text file</a>
-with the list of (conda) packages to be installed on the server
+with the list of (<a class="reference external" href="http://conda.pydata.org/docs/">conda</a>) packages to be installed on the server
 (and that file was mostly auto-generated). Then, MyBinder.org did the&nbsp;magic.</p>
 <p>Here, I want to briefly highlight some pre-conditions that made possible
 building such an incredible&nbsp;service.</p>
@@ -132,8 +131,10 @@ from Titus&nbsp;Brown.</p>
 <p>Synergies made possible by open source technologies <strong>plus</strong> skillful
 individuals can make&nbsp;miracles.</p>
 <p>In other words, with FRETBursts, we really stand on giant&#8217;s&nbsp;shoulders!</p>
+<hr class="docutils" />
+<p><em>Thanks to Yazan Alhadid for commenting on an early draft of this&nbsp;post.</em></p>
 </div>
-<p>There are <a href="http://tritemio.github.io/smbits/2016/03/22/fretbursts/#disqus_thread">comments</a>.</p>                </article>
+<p>There are <a href="http://tritemio.github.io/smbits/2016/03/22/binder-fretbursts/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">

@@ -7,7 +7,7 @@ On-Line Analysis of smFRET Data
 :slug: binder-fretbursts
 :authors: Antonino Ingargiola
 :summary: Try FRETBursts online with the new demo service based on mybinder.org
-:status: draft
+:status: published
 
 
 In a `previous post <{filename}/2016-02/fretbursts.rst>`_, I introduced
