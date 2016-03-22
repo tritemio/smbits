@@ -1,5 +1,5 @@
-Run FRETBursts On-Line
-======================
+On-Line Analysis of smFRET Data
+===============================
 
 :date: 2016-03-22
 :tags: smFRET, openscience, jupyter, reproducibility, mybinder
@@ -12,10 +12,10 @@ Run FRETBursts On-Line
 
 In a `previous post <{filename}/2016-02/fretbursts.rst>`_, I introduced
 `FRETBursts <http://tritemio.github.io/FRETBursts/>`__, an open source
-burst analysis software for single-molecule FRET data with a strong
+burst analysis software for single-molecule FRET (smFRET) data with a strong
 focus on reproducibility.
 Today, I talk about a new service (based on `MyBinder.org <http://MyBinder.org>`__)
-which allows running `FRETBursts online <https://github.com/tritemio/FRETBursts_notebooks#run-online>`__,
+which allows running `FRETBursts on-line <https://github.com/tritemio/FRETBursts_notebooks#run-online>`__,
 with zero installation.
 
 With this new service you can try FRETBursts without the need
